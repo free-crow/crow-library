@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 主题变量：默认白色主题；网站主题与阅读器主题分别保存 */
+:root {
+  --accent: #3b5bfd;
+  --reader-bg: #ffffff;
+  --reader-text: #1c1f24;
+}
+.dark {
+  --reader-bg: #1b1e24;
+  --reader-text: #d7dae0;
+}
+
+body {
+  @apply bg-white text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100;
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+.reader-content {
+  background: var(--reader-bg);
+  color: var(--reader-text);
+}

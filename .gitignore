@@ -1,0 +1,28 @@
+# 依赖与环境
+node_modules/
+.env
+.env.local
+.env*.local
+
+# 构建产物
+.next/
+out/
+dist/
+next-env.d.ts
+
+# 本地抓取的公版源文本缓存（由 scripts/build-books.mjs 生成，不入库）
+.cache/
+
+# 开源边界：电子书文件、封面、授权证据、用户数据一律不提交（见 README）
+content/books/
+content/covers/
+evidence/
+*.epub
+*.pdf
+# 例外：已确认公版的示例文件允许提交（其余书籍文件一律不提交）
+!public/books/*.epub
+!public/books/*.pdf
+
+# 系统
+.DS_Store
+Thumbs.db
