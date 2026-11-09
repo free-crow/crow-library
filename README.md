@@ -88,6 +88,8 @@ supabase/
 | 小说 | 三国演义（108 回）、红楼梦（1–23 回公版卷）、西游记（1–25 回公版卷）、水浒传（1–21 回公版卷）、聊斋志异（174 篇） |
 | 外国文学 | The Art of War（EPUB/PDF）、Pride and Prejudice（Ch. I–XXII）、The Adventures of Sherlock Holmes |
 
+以上为精选导读书目；另有约 100 本 Project Gutenberg 公版中文古籍由 `scripts/build-books.mjs bulk` 自动收录（元数据写入 `src/lib/books.generated.ts`，全文写入 `public/books/text/gb-*.json`），全站合计 110 余本。
+
 > 公版判定依据：作者逝世满 50 年（中国）/ 出版于美国公有领域；Gutenberg 版本为公版卷册，缺卷部分已在书名中标注。
 > 重新生成全文数据：先下载源文本到 `.cache/books/`，再执行 `node scripts/build-books.mjs`。
 

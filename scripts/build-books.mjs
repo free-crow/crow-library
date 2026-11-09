@@ -145,6 +145,7 @@ async function buildBook(cfg) {
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
+    if (!cfg.chapter) break;
     const t = line.trim();
     if (!t || NOISE.test(t)) {
       if (cur) cur.lines.push(""); // 保留空行以分段
@@ -199,6 +200,17 @@ async function buildBook(cfg) {
   }
   push();
 
+  if (!cfg.chapter) {
+    const paras = buildParagraphs(lines, "indent");
+    const chunk = 20;
+    for (let i = 0; i < paras.length; i += chunk) {
+      chapters.push({
+        title: `第${chapters.length + 1}节`,
+        paras: paras.slice(i, i + chunk).map((p) => t2s(p)),
+      });
+    }
+  }
+
   const meta = {
     id: cfg.id,
     source: {
@@ -241,53 +253,132 @@ const META = {
   sherlock: { title: "The Adventures of Sherlock Holmes", author: "Arthur Conan Doyle", categoryId: "lit-world", tags: ["English", "Detective", "Public Domain"], intro: "Project Gutenberg 公版英文原版，十二篇短篇探案。", heat: 910 },
 };
 
-const newIds = Object.keys(META).filter((id) => results[id]);
-if (newIds.length) {
-  const entries = [];
-  for (const id of newIds) {
-    const meta = META[id];
-    const cfg = books.find((b) => b.id === id);
+function entryFor(id, meta, data, gid) {
+  const preview = data.chapters.slice(0, 2).map((c) => ({
+    title: c.title,
+    paras: c.paras.filter((p) => p.length > 8).slice(0, 3).map((p) => (p.length > 240 ? `${p.slice(0, 240)}…` : p)),
+  }));
+  return {
+    id,
+    title: meta.title,
+    author: meta.author,
+    categoryId: meta.categoryId,
+    tags: meta.tags,
+    intro: meta.intro,
+    originalLanguage: meta.lang || "中文",
+    format: "TXT",
+    copyright: {
+      status: "approved",
+      basis: "公版（Public Domain）原作",
+      rightsHolder: "公有领域",
+      licenseName: "Public Domain",
+      licenseUrl: `https://www.gutenberg.org/ebooks/${gid}`,
+      permissionScope: "在线阅读 / 下载 / 格式转换 / AI 索引与问答",
+      territory: "全球（Project Gutenberg 美国公版）",
+      attributionText: "Public domain text from Project Gutenberg",
+      sourceUrl: `https://www.gutenberg.org/ebooks/${gid}`,
+      sourceDate: "2026-11-09",
+      reviewedBy: "自动审核（公版核验）",
+      reviewedAt: "2026-11-09",
+    },
+    aiAllowed: true,
+    heat: meta.heat,
+    updatedAt: "2026-11-09",
+    hasFullText: true,
+    chapters: preview,
+  };
+}
+
+const entries = [];
+for (const id of Object.keys(META)) {
+  try {
     const data = JSON.parse(await fs.readFile(path.join(OUT, `${id}.json`), "utf-8"));
-    const preview = data.chapters.slice(0, 2).map((c) => ({
-      title: c.title,
-      paras: c.paras.filter((p) => p.length > 8).slice(0, 4).map((p) => (p.length > 240 ? `${p.slice(0, 240)}…` : p)),
-    }));
-    entries.push({
-      id,
-      title: meta.title,
-      author: meta.author,
-      categoryId: meta.categoryId,
-      tags: meta.tags,
-      intro: meta.intro,
-      originalLanguage: /pride|sherlock/.test(id) ? "英文" : "中文",
-      format: "TXT",
-      copyright: {
-        status: "approved",
-        basis: "公版（Public Domain）原作",
-        rightsHolder: "公有领域",
-        licenseName: "Public Domain",
-        licenseUrl: `https://www.gutenberg.org/ebooks/${cfg.gid}`,
-        permissionScope: "在线阅读 / 下载 / 格式转换 / AI 索引与问答",
-        territory: "全球（Project Gutenberg 美国公版）",
-        attributionText: "Public domain text from Project Gutenberg",
-        sourceUrl: `https://www.gutenberg.org/ebooks/${cfg.gid}`,
-        sourceDate: "2026-11-09",
-        reviewedBy: "自动审核（公版核验）",
-        reviewedAt: "2026-11-09",
-      },
-      aiAllowed: true,
-      heat: meta.heat,
-      updatedAt: "2026-11-09",
-      hasFullText: true,
-      chapters: preview,
-    });
+    entries.push(entryFor(id, META[id], data, books.find((b) => b.id === id).gid));
+  } catch {
+    /* 尚未生成全文的跳过 */
   }
-  const ts = `// 由 scripts/build-books.mjs 自动生成：新增公版书籍元数据（含 2 章预览，全文见 public/books/text）
+}
+
+/* ===== 批量补齐公版书籍（node scripts/build-books.mjs bulk） ===== */
+if (process.argv.includes("bulk")) {
+  const catalog = JSON.parse(await fs.readFile(path.join(CACHE, "zh-catalog.json"), "utf-8"));
+  const chapterTests = [
+    [/^第[〇零一二三四五六七八九十百千]+回/, "indent"],
+    [/^第[〇零一二三四五六七八九十百千]+[卷篇章節]/, "indent"],
+    [/^卷[一二三四五六七八九十百]+/, "indent"],
+    [/^〈.+〉$/, "indent"],
+    [/^[一二三四五六七八九十]+[、．.]/, "line"],
+  ];
+  let added = 0;
+  const seenTitles = new Set(Object.values(META).map((m) => m.title.replace(/（.*/g, "").replace(/\(.*/g, "").trim()));
+  for (const item of catalog) {
+    if (added >= 100) break;
+    const gid = item.gid;
+    const id = `gb-${gid}`;
+    const file = path.join(CACHE, `pg${gid}.txt`);
+    try {
+      const raw = await fs.readFile(file, "utf-8");
+      const lines = bodyOf(raw);
+      let chosen = { chapter: null, mode: "indent" };
+      for (const [re, mode] of chapterTests) {
+        if (lines.filter((l) => re.test(l.trim())).length >= 3) {
+          chosen = { chapter: re, mode, latin: false };
+          break;
+        }
+      }
+      const cfg = { ...chosen, id, gid, stripNumber: false, chunk: !chosen.chapter };
+      await buildBook(cfg);
+      const data = JSON.parse(await fs.readFile(path.join(OUT, `${id}.json`), "utf-8"));
+      const chars = data.chapters.reduce((n, c) => n + c.paras.join("").length, 0);
+      if (chars < 2500 || data.chapters.length < 2) continue;
+
+      const head = raw.slice(0, Math.max(0, raw.indexOf("START OF")));
+      const headAuthor = head.match(/^Author:\s*(.+)$/m)?.[1]?.trim();
+      const tTitle = t2s(item.title)
+        .replace(/\s*volume\s*[\d\-–~]+/gi, "")
+        .replace(/\s*vol\.?\s*[\d\-–~]+/gi, "")
+        .replace(/[,，]\s*(Complete|Unabridged)\s*$/gi, "")
+        .replace(/[\s,，]+$/, "")
+        .replace(/\s+/g, " ")
+        .slice(0, 42);
+      // 仅收录中文原文：排除纯英文（多为现代英译，译文本身可能仍在版权期）与不宜公开展示的篇目
+      if (!/[\u4e00-\u9fa5]/.test(tTitle)) continue;
+      if (/金瓶梅|肉蒲团|国色天香|禁书/.test(tTitle)) continue;
+      const norm = tTitle.replace(/（.*?）|\(.*?\)|\s|卷.*|回.*|,.*|Vol.*/g, "");
+      if (seenTitles.has(norm)) continue;
+      seenTitles.add(norm);
+      const categoryId =
+        /詩|词|詞|曲|賦|赋|吟|歌|集/.test(tTitle) ? "lit-classic-poem"
+        : /演義|演义|小說|小说|傳奇|传奇|話本|话本|志異|志异/.test(tTitle) ? "lit-classic-novel"
+        : /史|紀|纪|志|書|书|卷/.test(tTitle) ? "hist-ancient"
+        : /經|经|論|论|語|语|禮|礼|易|春秋|孟|大學|大学|中庸|子/.test(tTitle) ? "phil-cn"
+        : "lit-classic";
+      entries.push(
+        entryFor(id, {
+          title: tTitle,
+          author: headAuthor ? t2s(headAuthor).slice(0, 24) : "佚名",
+          categoryId,
+          tags: ["公版", "Project Gutenberg"],
+          intro: `据 Project Gutenberg 公版文本整理，共 ${data.chapters.length} 章。`,
+          heat: 880 + (Number(gid) % 95),
+        }, data, gid),
+      );
+      added += 1;
+      console.log(`bulk ${id}\t${data.chapters.length} 章\t${(chars / 1000).toFixed(1)}k 字\t${tTitle}`);
+    } catch {
+      /* 源文本缺失或解析失败则跳过 */
+    }
+  }
+  console.log(`bulk added ${added} books`);
+}
+
+if (entries.length) {
+  const ts = `// 由 scripts/build-books.mjs 自动生成：公版书籍元数据（含 2 章预览，全文见 public/books/text）
 import type { Book } from "./types";
 
 export const NEW_BOOKS: Book[] = ${JSON.stringify(entries, null, 2)};
 `;
   await fs.writeFile(path.join(ROOT, "src", "lib", "books.generated.ts"), ts, "utf-8");
-  console.log(`generated src/lib/books.generated.ts (${newIds.length} books)`);
+  console.log(`generated src/lib/books.generated.ts (${entries.length} books)`);
 }
 
