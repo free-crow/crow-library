@@ -1,4 +1,4 @@
-"use client";
+\uFEFF"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -62,7 +62,10 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
       <div className="mt-2 hidden px-2 md:block">
         <img src="/images/crow.jpg" alt="乌鸦吉祥物" className="w-full rounded-xl object-cover opacity-95" />
       </div>
-      <div className="px-3 pt-2 text-xs text-neutral-400">V1.1 · 让阅读更自由</div>
+      <div className="flex gap-3 px-3 pt-2 text-xs text-neutral-500"><Link href="/copyright" onClick={onClose} className="hover:underline">版权政策</Link><Link href="/privacy" onClick={onClose} className="hover:underline">隐私政策</Link></div>
+      <div className="px-3 pt-1 text-xs text-neutral-400">V1.1 · 让阅读更自由</div>
     </aside>
   );
 }
+
+\n

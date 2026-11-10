@@ -1,4 +1,4 @@
-"use client";
+\uFEFF"use client";
 
 import { useRouter } from "next/navigation";
 import LoginGate from "@/components/LoginGate";
@@ -9,8 +9,10 @@ export default function ProfilePage() {
   const { user, setUser } = useApp();
 
   const logout = () => { setUser(null); router.push("/"); };
-  const delAccount = () => {
-    if (confirm("确定注销账号并清空本地数据？")) { localStorage.clear(); location.reload(); }
+  const clearLocalData = () => {
+    if (!confirm("确定清除本浏览器保存的图书馆数据？这不会删除 Supabase 云端账号或数据。")) return;
+    Object.keys(localStorage).filter((key) => key.startsWith("crow:")).forEach((key) => localStorage.removeItem(key));
+    location.reload();
   };
 
   return (
@@ -30,9 +32,12 @@ export default function ProfilePage() {
           className="mb-4 w-full rounded-lg border border-neutral-300 bg-neutral-50 px-3 py-2.5 outline-none dark:border-neutral-600 dark:bg-neutral-800" />
         <div className="flex gap-3">
           <button className="rounded-lg border border-neutral-300 px-4 py-2 text-sm dark:border-neutral-600" onClick={logout}>退出登录</button>
-          <button className="rounded-lg border border-red-300 px-4 py-2 text-sm text-red-600" onClick={delAccount}>注销账号</button>
+          <button className="rounded-lg border border-red-300 px-4 py-2 text-sm text-red-600" onClick={clearLocalData}>清除本地数据</button>
         </div>
       </div>
     </LoginGate>
   );
 }
+
+
+\n

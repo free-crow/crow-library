@@ -65,7 +65,7 @@ function ReaderInner() {
       const resp = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, bookTitle: book.title, chapterTitle, text }),
+        body: JSON.stringify({ action, bookId: book.id, chapterIndex: isTxt ? chIdx : undefined, text }),
       });
       const data = await resp.json();
       /* 版权边界：回答以摘要/解释/短引用为主，不提供整章逐字输出 */
