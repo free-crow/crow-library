@@ -1,0 +1,13 @@
+﻿# Do not upload local credentials or machine-only files.
+.env
+.env.*
+!.env.example
+*.local
+.vercel
+.git
+node_modules
+.next
+.cache
+out
+dist
+*.tsbuildinfo

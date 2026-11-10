@@ -1,4 +1,4 @@
-\uFEFF"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import LoginGate from "@/components/LoginGate";
@@ -38,6 +38,3 @@ export default function ProfilePage() {
     </LoginGate>
   );
 }
-
-
-\n
