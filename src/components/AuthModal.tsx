@@ -1,51 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApp } from "./StoreProvider";
-import { getSupabase, isSupabaseEnabled } from "@/lib/supabase";
+import { useI18n } from "./useI18n";
 
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+/**
+ * 登录 / 注册弹窗。
+ * - 登录：邮箱 + 上次设置的密码；登录状态会保存在本地，下次打开自动登录。
+ * - 注册：邮箱 → 发送验证码 → 填验证码 → 自定义密码；一个邮箱只能注册一次。
+ */
 export default function AuthModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { setUser } = useApp();
+  const { t } = useI18n();
+  const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
+  const [code, setCode] = useState("");
+  const [demoCode, setDemoCode] = useState("");
+  const [countdown, setCountdown] = useState(0);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (!open) return null;
-  const sb = getSupabase();
-  const enabled = isSupabaseEnabled();
+  useEffect(() => { setError(""); setNotice(""); }, [open, mode]);
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const id = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(id);
+  }, [countdown]);
 
-  const submit = async (isReg: boolean) => {
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setError("请输入正确的邮箱地址"); return; }
-    if (!pwd) { setError("请输入密码"); return; }
-    setError(""); setNotice(""); setBusy(true);
+  if (!open) return null;
+
+  const sendCode = async () => {
+    if (!EMAIL_RE.test(email.trim())) { setError(t("auth.errEmail")); return; }
+    setBusy(true); setError(""); setNotice("");
     try {
-      if (enabled && sb) {
-        /* Supabase Auth：注册发送验证邮件；登录走邮箱+密码 */
-        if (isReg) {
-          const { error: e } = await sb.auth.signUp({ email, password: pwd });
-          if (e) { setError(e.message); return; }
-          setNotice("验证邮件已发送，请到邮箱完成验证后再登录。");
-          return;
-        }
-        const { data, error: e } = await sb.auth.signInWithPassword({ email, password: pwd });
-        if (e) { setError(e.message.includes("Email not confirmed") ? "邮箱尚未验证，请先查收验证邮件" : e.message); return; }
-        setUser({ id: data.user.id, email: data.user.email ?? email, nick: data.user.user_metadata?.nick ?? "乌鸦读者", verified: true });
-        onClose();
-      } else {
-        /* 本地演示模式（未配置 Supabase） */
-        const users = JSON.parse(localStorage.getItem("crow:users") ?? "{}");
-        if (isReg) {
-          if (users[email]) { setError("该邮箱已注册，请直接登录"); return; }
-          users[email] = { pwd, verified: true };
-          localStorage.setItem("crow:users", JSON.stringify(users));
-        } else if (!users[email] || users[email].pwd !== pwd) {
-          setError("账号不存在或密码错误"); return;
-        }
-        setUser({ email, nick: "乌鸦读者", verified: true });
-        onClose();
-      }
+      const resp = await fetch("/api/auth/send-code", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) { setError(data.error ?? t("auth.codeFail")); return; }
+      setDemoCode(data.demoCode ?? "");
+      setCountdown(60);
+      setNotice(t("auth.codeSent", { email: email.trim() }));
+    } catch {
+      setError(t("auth.codeFail"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const submit = async () => {
+    setError(""); setNotice("");
+    if (!EMAIL_RE.test(email.trim())) { setError(t("auth.errEmail")); return; }
+    if (!pwd) { setError(t("auth.errPwd")); return; }
+    if (mode === "register") {
+      if (pwd.length < 6) { setError(t("auth.errPwdShort")); return; }
+      if (!/^\d{6}$/.test(code.trim())) { setError(t("auth.errCode")); return; }
+    }
+    setBusy(true);
+    try {
+      const url = mode === "login" ? "/api/auth/login" : "/api/auth/register";
+      const payload = mode === "login"
+        ? { email: email.trim(), password: pwd }
+        : { email: email.trim(), code: code.trim(), password: pwd };
+      const resp = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const data = await resp.json();
+      if (!resp.ok) { setError(data.error ?? t("auth.errBad")); return; }
+      setUser({ email: data.user.email, nick: data.user.nick, verified: true });
+      onClose();
+    } catch {
+      setError(t("auth.errBad"));
     } finally {
       setBusy(false);
     }
@@ -53,20 +81,56 @@ export default function AuthModal({ open, onClose }: { open: boolean; onClose: (
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div className="w-[min(400px,92vw)] rounded-2xl bg-white p-6 dark:bg-neutral-800" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-bold">邮箱登录 / 注册</h3>
-        <p className="mt-1 text-sm text-neutral-500">
-          {enabled ? "已连接 Supabase：注册将发送验证邮件。" : "本地演示模式：注册即视为已验证。配置 .env.local 后启用 Supabase 邮箱验证。"}
-        </p>
+      <div className="w-[min(420px,92vw)] rounded-2xl bg-white p-6 dark:bg-neutral-800" onClick={(e) => e.stopPropagation()}>
+        {/* 登录 / 注册切换 */}
+        <div className="mb-4 flex rounded-lg bg-neutral-100 p-1 text-sm dark:bg-neutral-700">
+          {(["login", "register"] as const).map((m) => (
+            <button key={m}
+              className={`flex-1 rounded-md px-3 py-1.5 ${mode === m ? "bg-white font-semibold shadow-sm dark:bg-neutral-900" : "text-neutral-500"}`}
+              onClick={() => setMode(m)}>{m === "login" ? t("auth.tabLogin") : t("auth.tabRegister")}</button>
+          ))}
+        </div>
+
+        <h3 className="text-lg font-bold">{mode === "login" ? t("auth.titleLogin") : t("auth.titleRegister")}</h3>
+        <p className="mt-1 text-sm text-neutral-500">{t("auth.remember")}</p>
+
         <input className="mt-4 w-full rounded-lg border border-neutral-300 bg-neutral-50 px-3 py-2.5 outline-none dark:border-neutral-600 dark:bg-neutral-700"
-          type="email" placeholder="邮箱，例如 test@crow.lib" value={email} onChange={(e) => setEmail(e.target.value)} />
+          type="email" placeholder={t("auth.email")} value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+
+        {mode === "register" && (
+          <>
+            <div className="mt-3 flex gap-2">
+              <input className="min-w-0 flex-1 rounded-lg border border-neutral-300 bg-neutral-50 px-3 py-2.5 outline-none dark:border-neutral-600 dark:bg-neutral-700"
+                inputMode="numeric" placeholder={t("auth.code")} value={code} maxLength={6}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))} />
+              <button disabled={busy || countdown > 0}
+                className="shrink-0 rounded-lg border border-neutral-300 px-3 py-2.5 text-sm disabled:opacity-50 dark:border-neutral-600"
+                onClick={sendCode}>
+                {countdown > 0 ? t("auth.resendIn", { s: countdown }) : t("auth.sendCode")}
+              </button>
+            </div>
+            {demoCode && (
+              <div className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                {t("auth.demoCode", { code: demoCode })}
+              </div>
+            )}
+          </>
+        )}
+
         <input className="mt-3 w-full rounded-lg border border-neutral-300 bg-neutral-50 px-3 py-2.5 outline-none dark:border-neutral-600 dark:bg-neutral-700"
-          type="password" placeholder="密码" value={pwd} onChange={(e) => setPwd(e.target.value)} />
+          type="password" placeholder={mode === "login" ? t("auth.password") : t("auth.pwdRule")} value={pwd}
+          onChange={(e) => setPwd(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
+          autoComplete={mode === "login" ? "current-password" : "new-password"} />
+
         <div className="mt-2 min-h-[18px] text-sm text-red-600">{error}</div>
         {notice && <div className="text-sm text-green-600">{notice}</div>}
-        <div className="mt-2 flex justify-end gap-3">
-          <button disabled={busy} className="rounded-lg border border-neutral-300 px-4 py-2 text-sm disabled:opacity-50 dark:border-neutral-600" onClick={() => submit(true)}>注册并验证</button>
-          <button disabled={busy} className="rounded-lg bg-accent px-4 py-2 text-sm text-white disabled:opacity-50" onClick={() => submit(false)}>登录</button>
+
+        <div className="mt-3 flex justify-end gap-3">
+          <button disabled={busy} className="rounded-lg border border-neutral-300 px-4 py-2 text-sm disabled:opacity-50 dark:border-neutral-600" onClick={onClose}>{t("auth.cancel")}</button>
+          <button disabled={busy} className="rounded-lg bg-accent px-5 py-2 text-sm text-white disabled:opacity-50" onClick={submit}>
+            {mode === "login" ? t("auth.login") : t("auth.submitRegister")}
+          </button>
         </div>
       </div>
     </div>

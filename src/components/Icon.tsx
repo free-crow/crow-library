@@ -29,6 +29,7 @@ const PATHS: Record<string, React.ReactNode> = {
   dashboard: <><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></>,
   users: <><circle cx="9" cy="8" r="3.5" /><path d="M2 21c1.2-3 3.8-4.5 7-4.5s5.8 1.5 7 4.5" /><path d="M17 8.5a3 3 0 1 0 0-5" /><path d="M18 16c1.8.6 3 1.8 4 4" /></>,
   sliders: <><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="16" cy="18" r="2" /></>,
+  globe: <><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z" /></>,
 };
 
 export default function Icon({ name, size = 20, className = "" }: { name: keyof typeof PATHS; size?: number; className?: string }) {

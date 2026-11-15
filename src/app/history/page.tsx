@@ -5,10 +5,13 @@ import Cover from "@/components/Cover";
 import LoginGate from "@/components/LoginGate";
 import { useApp } from "@/components/StoreProvider";
 import { useAllBooks } from "@/components/useBooks";
+import { useI18n } from "@/components/useI18n";
 import { isPublic } from "@/lib/copyright";
+import { htmlLangOf } from "@/lib/i18n";
 
 export default function HistoryPage() {
   const { history } = useApp();
+  const { t, lang } = useI18n();
   const allBooks = useAllBooks();
   const items = history
     .map((h) => ({ ...h, book: allBooks.find((b) => b.id === h.bookId) }))
@@ -16,8 +19,8 @@ export default function HistoryPage() {
 
   return (
     <LoginGate>
-      <h1 className="text-2xl font-bold">阅读历史</h1>
-      <p className="mb-5 mt-1 text-sm text-neutral-500">记录书籍、最近阅读时间、阅读进度和当前章节，支持一键继续阅读</p>
+      <h1 className="text-2xl font-bold">{t("hist.title")}</h1>
+      <p className="mb-5 mt-1 text-sm text-neutral-500">{t("hist.subtitle")}</p>
       {items.length ? (
         <div className="space-y-2">
           {items.map((h) => (
@@ -26,17 +29,17 @@ export default function HistoryPage() {
               <div className="min-w-0">
                 <div className="truncate font-medium">{h.book!.title}</div>
                 <div className="text-sm text-neutral-500">
-                  {new Date(h.time).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                  {" · 读至 "}{h.book!.chapters[h.chapterIndex]?.title ?? ""} · {h.percent}%
+                  {new Date(h.time).toLocaleString(htmlLangOf(lang), { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                  {" · "}{t("hist.readTo", { chapter: h.book!.chapters[h.chapterIndex]?.title ?? "", percent: h.percent })}
                 </div>
               </div>
               <div className="flex-1" />
-              <Link href={`/read/${h.bookId}`} className="rounded-lg bg-accent px-4 py-2 text-sm text-white">继续阅读</Link>
+              <Link href={`/read/${h.bookId}`} className="rounded-lg bg-accent px-4 py-2 text-sm text-white">{t("home.continueBtn")}</Link>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-14 text-center text-neutral-500">还没有阅读记录，去图书馆逛逛吧</div>
+        <div className="py-14 text-center text-neutral-500">{t("hist.empty")}</div>
       )}
     </LoginGate>
   );

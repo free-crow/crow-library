@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { HistoryItem, PlanDetail, ReadingProgress, User } from "./types";
 import type { BookOverride } from "./overrides";
+import { DEFAULT_LANG, type Lang } from "./i18n/lang";
 
 export interface ReaderPrefs { size: number; font: "serif" | "sans"; bg: "paper" | "eye" | "night"; }
 export interface Plan { daily: number; monthly: number; }
@@ -21,6 +22,7 @@ interface Persist {
   plan: Plan;
   planDetail: PlanDetail | null;
   aiUsage: AiUsage;
+  lang: Lang;
   theme: "light" | "dark" | "system" | "custom";
   accent: string;
   reader: ReaderPrefs;
@@ -36,6 +38,7 @@ const DEFAULTS: Persist = {
   plan: { daily: 30, monthly: 10 },
   planDetail: null,
   aiUsage: { used: 0, quota: 50 },
+  lang: DEFAULT_LANG,
   theme: "light",
   accent: "#3b5bfd",
   reader: { size: 17, font: "serif", bg: "paper" },
@@ -65,6 +68,7 @@ export function useStore() {
   const [plan, setPlan] = useState<Plan>(DEFAULTS.plan);
   const [planDetail, setPlanDetail] = useState<PlanDetail | null>(null);
   const [aiUsage, setAiUsage] = useState<AiUsage>(DEFAULTS.aiUsage);
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
   const [theme, setTheme] = useState<Persist["theme"]>("light");
   const [accent, setAccent] = useState(DEFAULTS.accent);
   const [reader, setReader] = useState<ReaderPrefs>(DEFAULTS.reader);
@@ -82,6 +86,7 @@ export function useStore() {
     setPlan(load(email, "plan"));
     setPlanDetail(load(email, "planDetail"));
     setAiUsage(load(email, "aiUsage"));
+    setLang(load(null, "lang"));
     setTheme(load(null, "theme"));
     setAccent(load(null, "accent"));
     setReader(load(null, "reader"));
@@ -90,7 +95,7 @@ export function useStore() {
   }, []);
 
   const persist = useCallback(<K extends keyof Persist>(k: K, v: Persist[K]) => {
-    const email = k === "theme" || k === "accent" || k === "reader" || k === "user" || k === "bookOverrides"
+    const email = k === "lang" || k === "theme" || k === "accent" || k === "reader" || k === "user" || k === "bookOverrides"
       ? null
       : (load(null, "user")?.email ?? null);
     localStorage.setItem(key(email, k), JSON.stringify(v));
@@ -110,6 +115,7 @@ export function useStore() {
     plan, setPlan: wrap(setPlan, "plan"),
     planDetail, setPlanDetail: wrap(setPlanDetail, "planDetail"),
     aiUsage, setAiUsage: wrap(setAiUsage, "aiUsage"),
+    lang, setLang: wrap(setLang, "lang"),
     theme, setTheme: wrap(setTheme, "theme"),
     accent, setAccent: wrap(setAccent, "accent"),
     reader, setReader: wrap(setReader, "reader"),

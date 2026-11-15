@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useStore, type Store } from "@/lib/store";
 import { isSupabaseEnabled } from "@/lib/supabase";
+import { htmlLangOf } from "@/lib/i18n";
 import { loadFavoritesFromCloud, loadProgressFromCloud, syncFavoritesToCloud, syncProgressToCloud } from "@/lib/sync";
 import AuthModal from "./AuthModal";
 
@@ -59,6 +60,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
     const apply = () => {
       const t = store.theme === "system" ? (sysDark.matches ? "dark" : "light") : store.theme;
       document.documentElement.classList.toggle("dark", t === "dark");
+      document.documentElement.lang = htmlLangOf(store.lang);
       document.documentElement.style.setProperty("--accent", store.accent);
       document.documentElement.style.setProperty("--reader-bg", BG_MAP[store.reader.bg]);
       document.documentElement.style.setProperty("--reader-text", TX_MAP[store.reader.bg]);
@@ -66,7 +68,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
     apply();
     sysDark.addEventListener("change", apply);
     return () => sysDark.removeEventListener("change", apply);
-  }, [store.theme, store.accent, store.reader]);
+  }, [store.theme, store.accent, store.reader, store.lang]);
 
   return (
     <StoreCtx.Provider value={store}>

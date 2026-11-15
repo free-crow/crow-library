@@ -1,6 +1,6 @@
 {
   "name": "crow-library",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "description": "乌鸦的图书馆 Crow Library —— 免费、开放的数字图书馆（第一版：文字书闭环）",
   "scripts": {
@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.119.0",
     "epubjs": "^0.3.93",
     "next": "^15.5.29",
+    "nodemailer": "^10.5.0",
     "opencc-js": "^1.4.2",
     "pdfjs-dist": "^6.5.438",
     "react": "19.1.0",

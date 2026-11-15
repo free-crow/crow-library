@@ -1,4 +1,7 @@
+"use client";
+
 import type { Book } from "@/lib/types";
+import { useI18n } from "./useI18n";
 
 /** 自制排版封面：书名 + 作者 + 分类配色 + 篆印元素，全部由代码绘制，无第三方图片版权 */
 const PALETTE: Record<string, [string, string, string]> = {
@@ -18,6 +21,7 @@ function palette(book: Book): [string, string, string] {
 
 export default function Cover({ book, small = false }: { book: Book; small?: boolean }) {
   const [bg1, bg2, ink] = palette(book);
+  const { t } = useI18n();
   if (small) {
     return (
       <div
@@ -33,11 +37,11 @@ export default function Cover({ book, small = false }: { book: Book; small?: boo
     <div
       className="relative flex aspect-[3/4] flex-col overflow-hidden rounded-xl shadow-md"
       style={{ background: `linear-gradient(155deg, ${bg1} 0%, ${bg2} 100%)`, color: ink }}
-      aria-label={`${book.title}封面`}
+      aria-label={`${book.title} · ${t("brand.name")}`}
     >
       <span className="pointer-events-none absolute inset-[6px] rounded-lg border border-white/20" />
       <span className="pointer-events-none absolute inset-y-0 left-[44%] w-px bg-white/10" />
-      <span className="absolute left-2.5 top-2 text-[9px] tracking-[0.22em] opacity-70">乌鸦的图书馆</span>
+      <span className="absolute left-2.5 top-2 text-[9px] tracking-[0.22em] opacity-70">{t("brand.name")}</span>
       <div className="relative flex flex-1 items-start justify-end p-3 pl-8 pt-6">
         <h3
           className="max-h-full text-[15px] font-semibold leading-snug [writing-mode:vertical-rl] [text-shadow:0_1px_2px_rgba(0,0,0,.35)]"

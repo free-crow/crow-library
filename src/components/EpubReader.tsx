@@ -32,6 +32,17 @@ export default function EpubReader({ fileUrl, title, onProgress }: {
         });
         rendition.themes.select("crow");
         await rendition.display();
+        /* 部分 EPUB 首屏是只有图片的封面页（无正文），自动翻到第一页有文字的内容 */
+        const hasText = () => {
+          const contents = (rendition as unknown as { getContents?: () => { document?: Document }[] }).getContents?.() ?? [];
+          return contents.some((c) => (c.document?.body?.innerText ?? "").trim().length > 0);
+        };
+        try {
+          for (let i = 0; i < 5 && !hasText(); i++) await rendition.next();
+          if (!hasText()) await rendition.display();
+        } catch {
+          /* 忽略：保持默认首屏 */
+        }
         rendition.on("relocated", (loc: { start?: { cfi?: string } }) => {
           try {
             const locs = book.locations as unknown as { percentageFromCfi?: (c: string) => number } | undefined;

@@ -11,3 +11,6 @@ node_modules
 out
 dist
 *.tsbuildinfo
+
+# 本地账号数据不上传
+.data

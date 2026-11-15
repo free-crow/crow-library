@@ -2,6 +2,7 @@
 
 import { createContext, useContext } from "react";
 import { useApp, useAuth } from "./StoreProvider";
+import { useI18n } from "./useI18n";
 
 const Ctx = createContext(false);
 
@@ -9,13 +10,14 @@ const Ctx = createContext(false);
 export default function LoginGate({ children }: { children: React.ReactNode }) {
   const { user, ready } = useApp();
   const { openAuth } = useAuth();
+  const { t } = useI18n();
 
-  if (!ready) return <div className="py-16 text-center text-neutral-500">加载中…</div>;
+  if (!ready) return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
   if (!user) {
     return (
       <div className="py-16 text-center text-neutral-500">
-        该功能需要登录。
-        <button className="ml-3 rounded-lg bg-accent px-4 py-2 text-sm text-white" onClick={openAuth}>去登录</button>
+        {t("gate.need")}
+        <button className="ml-3 rounded-lg bg-accent px-4 py-2 text-sm text-white" onClick={openAuth}>{t("gate.login")}</button>
       </div>
     );
   }
