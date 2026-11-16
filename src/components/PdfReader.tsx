@@ -48,7 +48,9 @@ export default function PdfReader({ fileUrl, title, onProgress }: {
       globalThis.structuredClone = ((obj: unknown) => JSON.parse(JSON.stringify(obj))) as typeof structuredClone;
     }
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.min.mjs");
-    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    /* 用 .js 后缀：部分 CDN 会把 .mjs 返回成 application/octet-stream，
+       module worker 要求 JavaScript MIME，否则浏览器直接拒绝加载导致 PDF 打不开。 */
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
     return pdfjs;
   }, []);
 

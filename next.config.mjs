@@ -16,8 +16,13 @@ const nextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
       },
       {
-        source: "/pdf.worker.min.mjs",
-        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+        /* worker 必须走 .js 路径并显式声明脚本类型：.mjs 在部分 CDN 上会被当作
+           application/octet-stream，module worker 因此加载失败。 */
+        source: "/pdf.worker.min.js",
+        headers: [
+          { key: "Content-Type", value: "text/javascript; charset=utf-8" },
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
       },
       {
         source: "/images/:path*",
