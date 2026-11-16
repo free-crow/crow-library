@@ -114,6 +114,30 @@ export async function createAccount(email: string, password: string, nick?: stri
   }
 }
 
+/** 重置密码：重新生成盐并写入新哈希（Supabase 优先，其次本地文件，最后内存） */
+export async function updatePassword(email: string, password: string): Promise<boolean> {
+  const key = normalizeEmail(email);
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = hashPassword(password, salt);
+
+  const db = serverDb();
+  if (db) {
+    const { error } = await db.from(ACCOUNT_TABLE).update({ salt, hash }).eq("email", key);
+    if (!error) return true;
+  }
+
+  const all = await readJson<Record<string, Account>>(ACCOUNTS_FILE, {});
+  if (all[key]) {
+    all[key] = { ...all[key], salt, hash };
+    try { await writeJson(ACCOUNTS_FILE, all); } catch { /* 无盘环境：只更新内存 */ }
+  }
+  if (memAccounts.has(key)) {
+    memAccounts.set(key, { ...memAccounts.get(key)!, salt, hash });
+    return true;
+  }
+  return Boolean(all[key]);
+}
+
 export async function verifyPassword(email: string, password: string): Promise<Account | null> {
   const account = await findAccount(email);
   if (!account) return null;

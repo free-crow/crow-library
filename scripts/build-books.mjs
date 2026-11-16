@@ -11,6 +11,7 @@ const t2s = Converter({ from: "tw", to: "cn" });
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CACHE = path.join(ROOT, ".cache", "books");
 const OUT = path.join(ROOT, "public", "books", "text");
+const TOC = path.join(ROOT, "public", "books", "toc");
 
 const NOISE = /^(Title:|Author:|Language:|Credits:|Release date|EBook|HTML|UTF-8|Encoding|Produced by|Updated editions|Character set|Project Gutenberg|\*\*\*|=====|-----|https?:\/\/|www\.)/i;
 
@@ -222,6 +223,13 @@ async function buildBook(cfg) {
   };
   await fs.mkdir(OUT, { recursive: true });
   await fs.writeFile(path.join(OUT, `${cfg.id}.json`), JSON.stringify(meta), "utf-8");
+  /* 目录索引：详情页只读它，不必为了章节目录下载整本全文 */
+  await fs.mkdir(TOC, { recursive: true });
+  await fs.writeFile(
+    path.join(TOC, `${cfg.id}.json`),
+    JSON.stringify({ id: cfg.id, titles: meta.chapters.map((c) => c.title) }),
+    "utf-8",
+  );
   return { id: cfg.id, chapters: meta.chapters.length, chars: meta.chapters.reduce((n, c) => n + c.paras.join("").length, 0) };
 }
 

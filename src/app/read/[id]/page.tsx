@@ -3,15 +3,18 @@
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
-import EpubReader from "@/components/EpubReader";
+import dynamic from "next/dynamic";
 import Icon from "@/components/Icon";
-import PdfReader from "@/components/PdfReader";
 import { useApp, useAuth } from "@/components/StoreProvider";
 import { useBookChapters } from "@/components/useBookChapters";
 import { useAllBooks } from "@/components/useBooks";
 import { useI18n } from "@/components/useI18n";
 import { isPublic } from "@/lib/copyright";
 import type { Book } from "@/lib/types";
+
+/* 阅读器按需加载：TXT 书籍不下载 PDF.js / EPUB.js，首屏更轻、打开更快 */
+const EpubReader = dynamic(() => import("@/components/EpubReader"), { ssr: false });
+const PdfReader = dynamic(() => import("@/components/PdfReader"), { ssr: false });
 
 /* 送给 AI 的指令保持中文（后端按中文识别），界面按钮文字按当前语言显示 */
 const AI_ACTIONS = ["ai.act.0", "ai.act.1", "ai.act.2", "ai.act.3", "ai.act.4"] as const;

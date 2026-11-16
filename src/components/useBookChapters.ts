@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Book, Chapter } from "@/lib/types";
 
 export interface BookChaptersState {
@@ -12,6 +12,21 @@ export interface BookChaptersState {
 
 /** 单本全文最长等待时间：超过就给出明确错误，不让页面一直转圈 */
 const FETCH_TIMEOUT = 30000;
+
+/**
+ * 最近打开过的全文按 id 缓存在内存里：从详情页返回、或在同一本书里来回切换时不再重新下载解析。
+ * 只保留最近 3 本，避免长文本把内存撑大。
+ */
+const chapterCache = new Map<string, Chapter[]>();
+
+function remember(id: string, chapters: Chapter[]) {
+  chapterCache.delete(id);
+  chapterCache.set(id, chapters);
+  if (chapterCache.size > 3) {
+    const oldest = chapterCache.keys().next().value;
+    if (oldest) chapterCache.delete(oldest);
+  }
+}
 
 /**
  * 优先加载 public/books/text/<id>.json 的公版全文，未提供时回退 data.ts 内置章节。
@@ -31,6 +46,10 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
   const hasFullText = book?.hasFullText;
   const builtin = book?.chapters;
 
+  /* 内置预览章节只作兜底，用 ref 读取，避免它每次换引用都触发全文重新下载 */
+  const builtinRef = useRef<Chapter[] | undefined>(builtin);
+  builtinRef.current = builtin;
+
   const retry = useCallback(() => setAttempt((v) => v + 1), []);
 
   useEffect(() => {
@@ -40,8 +59,13 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
       setState({ chapters: null, loading: false, error: false });
       return;
     }
+    const cached = chapterCache.get(id);
+    if (cached?.length) {
+      setState({ chapters: cached, loading: false, error: false });
+      return;
+    }
     if (!hasFullText) {
-      const chapters = builtin ?? [];
+      const chapters = builtinRef.current ?? [];
       setState({ chapters, loading: false, error: chapters.length === 0 });
       return;
     }
@@ -52,13 +76,14 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (!alive) return;
-        const chapters: Chapter[] = d?.chapters?.length ? (d.chapters as Chapter[]) : (builtin ?? []);
+        const chapters: Chapter[] = d?.chapters?.length ? (d.chapters as Chapter[]) : (builtinRef.current ?? []);
+        if (chapters.length && d?.chapters?.length) remember(id, chapters);
         setState({ chapters, loading: false, error: chapters.length === 0 });
       })
       .catch(() => {
         if (!alive) return;
         /* 网络失败/超时：先用内置预览章节保证有内容可读，再由界面提供重试 */
-        const chapters = builtin ?? [];
+        const chapters = builtinRef.current ?? [];
         setState({ chapters, loading: false, error: chapters.length === 0 });
       })
       .finally(() => clearTimeout(timer));
@@ -67,7 +92,7 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
       clearTimeout(timer);
       ctrl.abort();
     };
-  }, [id, format, hasFullText, builtin, attempt]);
+  }, [id, format, hasFullText, attempt]);
 
   return { chapters: state.chapters ?? [], loading: state.loading, error: state.error, retry };
 }

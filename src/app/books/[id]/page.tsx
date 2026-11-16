@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Cover from "@/components/Cover";
 import Icon from "@/components/Icon";
 import { useApp, useAuth } from "@/components/StoreProvider";
 import { useAllBooks } from "@/components/useBooks";
-import { useBookChapters } from "@/components/useBookChapters";
 import { useI18n } from "@/components/useI18n";
 import { isPublic, STATUS_TEXT } from "@/lib/copyright";
 
@@ -19,7 +19,32 @@ export default function BookDetailPage() {
   const allBooks = useAllBooks();
   
   const book = allBooks.find((b) => b.id === id);
-  const { chapters } = useBookChapters(book);
+  const [toc, setToc] = useState<string[] | null>(null);
+
+  /** 目录只取标题（几 KB），不再为了目录把整本 1~3MB 全文拉下来 */
+  useEffect(() => {
+    const bid = book?.id;
+    if (!bid || book?.format !== "TXT" || !book?.hasFullText) { setToc(null); return; }
+    let alive = true;
+    setToc(null);
+    fetch(`/books/toc/${bid}.json`, { cache: "force-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && Array.isArray(d?.titles) && d.titles.length) setToc(d.titles as string[]); })
+      .catch(() => { /* 没有目录文件时回落到预览章节 */ });
+    /* 空闲 1.2 秒后预热全文，点“开始阅读”时直接命中浏览器缓存 */
+    const warm = window.setTimeout(() => {
+      const link = document.createElement("link");
+      link.rel = "prefetch";
+      link.as = "fetch";
+      link.href = `/books/text/${bid}.json`;
+      document.head.appendChild(link);
+    }, 1200);
+    return () => { alive = false; clearTimeout(warm); };
+  }, [book?.id, book?.format, book?.hasFullText]);
+
+  useEffect(() => {
+    if (book?.id) router.prefetch(`/read/${book.id}`);
+  }, [book?.id, router]);
 
   if (!ready) return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
   if (!book || !isPublic(book)) {
@@ -32,6 +57,7 @@ export default function BookDetailPage() {
   const fav = favorites.includes(book.id);
   const inShelf = shelf.includes(book.id);
   const prog = progress[book.id];
+  const chapterTitles = toc ?? (book.chapters ?? []).map((ch) => ch.title);
 
   const toggle = (list: string[], set: (v: string[]) => void) =>
     user ? set(list.includes(book.id) ? list.filter((x) => x !== book.id) : [...list, book.id]) : openAuth();
@@ -74,14 +100,14 @@ export default function BookDetailPage() {
       </section>
 
       <section>
-        {chapters.length ? (
+        {chapterTitles.length ? (
           <>
-            <h2 className="mb-3 text-lg font-semibold">{t("book.toc", { n: chapters.length })}</h2>
+            <h2 className="mb-3 text-lg font-semibold">{t("book.toc", { n: chapterTitles.length })}</h2>
             <div className="max-h-96 divide-y divide-neutral-200 overflow-y-auto rounded-xl border border-neutral-200 dark:divide-neutral-700 dark:border-neutral-700">
-              {chapters.map((ch, i) => (
+              {chapterTitles.map((title, i) => (
                 <button key={i} className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800"
                   onClick={() => router.push(`/read/${book.id}?ch=${i}`)}>
-                  <Icon name="book" size={16} className="shrink-0 text-neutral-400" /> {ch.title}
+                  <Icon name="book" size={16} className="shrink-0 text-neutral-400" /> {title}
                 </button>
               ))}
             </div>
