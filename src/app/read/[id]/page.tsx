@@ -26,7 +26,7 @@ function ReaderInner() {
   const { t } = useI18n();
   const allBooks = useAllBooks();
   const book = allBooks.find((b) => b.id === id);
-  const { chapters, loading: chaptersLoading, error: chaptersError, retry: retryChapters } = useBookChapters(book);
+  const { chapters, firstChapter, loading: chaptersLoading, error: chaptersError, retry: retryChapters } = useBookChapters(book);
   const { user, progress, setProgress, history, setHistory, shelf, setShelf, reader, setReader, aiUsage, setAiUsage, ready } = useApp();
   const { openAuth } = useAuth();
   const [chIdx, setChIdx] = useState<number | null>(null);
@@ -161,7 +161,27 @@ function ReaderInner() {
   }
 
   /* ===== TXT ===== */
-  if (chaptersLoading) return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
+  if (chaptersLoading) {
+    /* 只在本来就会从第一章打开时先画出已到达的第一章，导航仍等全文，避免进度被夹到第 1 章。 */
+    const fromUrl = search.get("ch");
+    const saved = progressRef.current[book.id]?.chapterIndex ?? 0;
+    const intended = Number(fromUrl !== null ? fromUrl : saved);
+    const openAtStart = !Number.isFinite(intended) || intended <= 0;
+    if (openAtStart && firstChapter) {
+      return (
+        <div className="mx-auto max-w-3xl">
+          {toolbar}
+          <div
+            className="reader-content min-h-[55vh] rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700 md:p-9"
+            style={{ fontSize: reader.size, fontFamily: reader.font === "serif" ? "Georgia,'Songti SC',serif" : "system-ui,sans-serif" }}>
+            <h3 className="mb-5 text-lg font-semibold">{firstChapter.title}</h3>
+            {firstChapter.paras.map((p, i) => <p key={i} className="mb-4 indent-[2em]">{p}</p>)}
+          </div>
+        </div>
+      );
+    }
+    return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
+  }
   if (chaptersError || !chapters.length) {
     return (
       <div className="py-16 text-center text-sm text-neutral-500">
