@@ -41,7 +41,15 @@ export default function Topbar({ onMenu, sidebarOpen }: { onMenu: () => void; si
             className="w-full rounded-full border border-neutral-300 bg-neutral-100 py-2 pl-10 pr-4 text-sm outline-none dark:border-neutral-600 dark:bg-neutral-800"
             type="search" placeholder={t("top.search")} value={q}
             onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && q.trim()) router.push(`/library?q=${encodeURIComponent(q.trim())}`); }}
+            onKeyDown={(e) => {
+              // 与首页搜索框相同：输入法确认回车要跳过，并用输入框当前文字而不是可能过期的 state。
+              if (e.key !== "Enter") return;
+              const native = e.nativeEvent;
+              if (native.isComposing || native.keyCode === 229) return;
+              const query = e.currentTarget.value.trim();
+              if (!query) return;
+              router.push(`/library?q=${encodeURIComponent(query)}`);
+            }}
           />
         </div>
       </div>

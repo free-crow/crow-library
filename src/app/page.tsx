@@ -40,7 +40,16 @@ export default function HomePage() {
           <input
             className="mt-4 w-full max-w-sm rounded-full px-4 py-2.5 text-sm text-neutral-900 outline-none"
             placeholder={t("home.search")} value={q} onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && q.trim()) router.push(`/library?q=${encodeURIComponent(q.trim())}`); }}
+            onKeyDown={(e) => {
+              // 中文输入法用回车确认选词时，这次按键不能当作搜索。
+              // 搜索词必须读输入框里的当前文字：回车往往和最后一次输入落在同一次渲染之前，只读 state 会什么都不做。
+              if (e.key !== "Enter") return;
+              const native = e.nativeEvent;
+              if (native.isComposing || native.keyCode === 229) return;
+              const query = e.currentTarget.value.trim();
+              if (!query) return;
+              router.push(`/library?q=${encodeURIComponent(query)}`);
+            }}
           />
         </div>
         {/* 紫色区域右侧（手机端为下方）的乌鸦吉祥物 */}
