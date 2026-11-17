@@ -5,9 +5,51 @@ import type { Book, Chapter } from "@/lib/types";
 
 export interface BookChaptersState {
   chapters: Chapter[];
+  /** 全文尚未下完时，已能解析出的第一章。只用于首屏出字，不能当成完整目录。 */
+  firstChapter: Chapter | null;
   loading: boolean;
   error: boolean;
   retry: () => void;
+}
+
+/** 从尚未收齐的 JSON 文本里取出 chapters[0]。串被截断或还不是合法对象时返回 null。 */
+export function sliceFirstChapter(buffer: string): Chapter | null {
+  const key = '"chapters":';
+  const at = buffer.indexOf(key);
+  if (at < 0) return null;
+  let i = at + key.length;
+  while (i < buffer.length && buffer[i] === " ") i += 1;
+  if (buffer[i] !== "[") return null;
+  i += 1;
+  while (i < buffer.length && /\s/.test(buffer[i])) i += 1;
+  if (buffer[i] !== "{") return null;
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  for (let k = i; k < buffer.length; k += 1) {
+    const c = buffer[k];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === "\\") esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === "{" || c === "[") depth += 1;
+    else if (c === "}" || c === "]") {
+      depth -= 1;
+      if (depth === 0) {
+        try {
+          const chapter = JSON.parse(buffer.slice(i, k + 1)) as Chapter;
+          if (chapter && typeof chapter.title === "string" && Array.isArray(chapter.paras) && chapter.paras.length) return chapter;
+        } catch {
+          return null;
+        }
+        return null;
+      }
+    }
+  }
+  return null;
 }
 
 /** 单本全文最长等待时间：超过就给出明确错误，不让页面一直转圈 */
@@ -34,8 +76,9 @@ function remember(id: string, chapters: Chapter[]) {
  * 依赖 book 的稳定字段而非整个对象，切换界面语言重新 map 书籍对象时不会重复请求全文。
  */
 export function useBookChapters(book?: Book | null): BookChaptersState {
-  const [state, setState] = useState<{ chapters: Chapter[] | null; loading: boolean; error: boolean }>({
+  const [state, setState] = useState<{ chapters: Chapter[] | null; firstChapter: Chapter | null; loading: boolean; error: boolean }>({
     chapters: null,
+    firstChapter: null,
     loading: true,
     error: false,
   });
@@ -56,35 +99,56 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
     let alive = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (!id || format !== "TXT") {
-      setState({ chapters: null, loading: false, error: false });
+      setState({ chapters: null, firstChapter: null, loading: false, error: false });
       return;
     }
     const cached = chapterCache.get(id);
     if (cached?.length) {
-      setState({ chapters: cached, loading: false, error: false });
+      setState({ chapters: cached, firstChapter: null, loading: false, error: false });
       return;
     }
     if (!hasFullText) {
       const chapters = builtinRef.current ?? [];
-      setState({ chapters, loading: false, error: chapters.length === 0 });
+      setState({ chapters, firstChapter: null, loading: false, error: chapters.length === 0 });
       return;
     }
     const ctrl = new AbortController();
-    setState({ chapters: null, loading: true, error: false });
+    setState({ chapters: null, firstChapter: null, loading: true, error: false });
     timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
     fetch(`/books/text/${id}.json`, { signal: ctrl.signal, cache: "force-cache" })
-      .then((r) => (r.ok ? r.json() : null))
+      .then(async (r) => {
+        if (!r.ok) return null;
+        if (!r.body) return r.json();
+        const reader = r.body.getReader();
+        const decoder = new TextDecoder();
+        let raw = "";
+        let announced = false;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (value) raw += decoder.decode(value, { stream: !done });
+          if (!announced) {
+            const first = sliceFirstChapter(raw);
+            if (first && alive) {
+              announced = true;
+              setState((prev) => (prev.firstChapter ? prev : { ...prev, firstChapter: first }));
+            }
+          }
+          if (done) break;
+        }
+        raw += decoder.decode();
+        return raw ? JSON.parse(raw) : null;
+      })
       .then((d) => {
         if (!alive) return;
         const chapters: Chapter[] = d?.chapters?.length ? (d.chapters as Chapter[]) : (builtinRef.current ?? []);
         if (chapters.length && d?.chapters?.length) remember(id, chapters);
-        setState({ chapters, loading: false, error: chapters.length === 0 });
+        setState({ chapters, firstChapter: null, loading: false, error: chapters.length === 0 });
       })
       .catch(() => {
         if (!alive) return;
         /* 网络失败/超时：先用内置预览章节保证有内容可读，再由界面提供重试 */
         const chapters = builtinRef.current ?? [];
-        setState({ chapters, loading: false, error: chapters.length === 0 });
+        setState({ chapters, firstChapter: null, loading: false, error: chapters.length === 0 });
       })
       .finally(() => clearTimeout(timer));
     return () => {
@@ -94,5 +158,5 @@ export function useBookChapters(book?: Book | null): BookChaptersState {
     };
   }, [id, format, hasFullText, attempt]);
 
-  return { chapters: state.chapters ?? [], loading: state.loading, error: state.error, retry };
+  return { chapters: state.chapters ?? [], firstChapter: state.firstChapter, loading: state.loading, error: state.error, retry };
 }
