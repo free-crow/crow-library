@@ -23,7 +23,6 @@ export default function EpubReader({ fileUrl, title, onProgress }: {
         const book = ePub(fileUrl);
         bookRef.current = book;
         await book.ready;
-        await book.locations.generate(800);  // 生成定位点以计算阅读百分比
         if (cancelled || !boxRef.current) return;
         const rendition = book.renderTo(boxRef.current, { width: "100%", height: "62vh", spread: "none" });
         rendRef.current = rendition;
@@ -43,7 +42,7 @@ export default function EpubReader({ fileUrl, title, onProgress }: {
         } catch {
           /* 忽略：保持默认首屏 */
         }
-        rendition.on("relocated", (loc: { start?: { cfi?: string } }) => {
+        const report = (loc?: { start?: { cfi?: string } }) => {
           try {
             const locs = book.locations as unknown as { percentageFromCfi?: (c: string) => number } | undefined;
             const cfi = loc?.start?.cfi;
@@ -52,8 +51,17 @@ export default function EpubReader({ fileUrl, title, onProgress }: {
           } catch {
             onProgress(0, "EPUB");
           }
-        });
-        setLoading(false);
+        };
+        rendition.on("relocated", report);
+        if (!cancelled) setLoading(false);
+        /* 定位点只服务阅读百分比。generate 会按线性章节逐段停顿，字节到齐后仍可能数秒才返回；先出字，再在后台补百分比。 */
+        if (!cancelled) {
+          void book.locations.generate(800).then(() => {
+            if (cancelled) return;
+            const loc = (rendition as unknown as { location?: { start?: { cfi?: string } } }).location;
+            if (loc) report(loc);
+          }).catch(() => { /* 百分比算不出来时仍可翻页 */ });
+        }
       } catch {
         if (!cancelled) { setError("EPUB 加载失败"); setLoading(false); }
       }
