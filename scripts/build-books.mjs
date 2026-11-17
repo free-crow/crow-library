@@ -21,7 +21,8 @@ const books = [
   { id: "sunzi-bingfa", gid: 23864, mode: "line", chapter: /^[^，。！？]{1,8}第[一二三四五六七八九十]+$/ },
   { id: "shijing", gid: 23873, mode: "line", chapter: /^\d+\.\s/ },
   { id: "yijing", gid: 25501, mode: "line", chapter: /^第\s*[一二三四五六七八九十百]+\s*卦/ },
-  { id: "hongloumeng", gid: 24264, mode: "indent", chapter: /^第[〇零一二三四五六七八九十百千]+回/ },
+  /* 「第N回」后必须收束或接空白/冒号。正文「第四回中既将…」「第二回了」不能当成新章，否则真标题因无正文被丢弃。 */
+  { id: "hongloumeng", gid: 24264, mode: "indent", chapter: /^第[〇零一二三四五六七八九十百千]+回(?=$|[\s\u3000：:])/ },
   { id: "xiyouji", gid: 23962, mode: "indent", chapter: /^第[〇零一二三四五六七八九十百千]+回/ },
   { id: "shuihu", gid: 23863, mode: "indent", chapter: /^第[〇零一二三四五六七八九十百千]+回/ },
   { id: "sanguo", gid: 23950, mode: "indent", chapter: /^第[〇零一二三四五六七八九十百千]+回/ },
