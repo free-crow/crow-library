@@ -1,0 +1,1862 @@
+{
+  "sourceCommit": "3d291435a9537b47e9c92985cf22d0313100c971",
+  "books": [
+    {
+      "id": "siku-001",
+      "file": "book-texts/batch-001/001-家語（四庫全書本）.txt",
+      "sha256": "45c805814ac1001606a57e56cdbaab731c3286364d0431aeaf4742e241457c4d",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 34
+        },
+        {
+          "title": "卷二",
+          "line": 72
+        },
+        {
+          "title": "卷三",
+          "line": 96
+        },
+        {
+          "title": "卷四",
+          "line": 122
+        },
+        {
+          "title": "卷五",
+          "line": 146
+        },
+        {
+          "title": "卷六",
+          "line": 180
+        },
+        {
+          "title": "卷七",
+          "line": 208
+        },
+        {
+          "title": "卷八",
+          "line": 238
+        },
+        {
+          "title": "卷九",
+          "line": 272
+        },
+        {
+          "title": "卷十",
+          "line": 302
+        }
+      ]
+    },
+    {
+      "id": "siku-002",
+      "file": "book-texts/batch-001/002-荀子（四庫全書本）.txt",
+      "sha256": "ae50042889e5d2800d2c5f66c5f6408e368515d76c7d4689b798cf3371d3d1c7",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 136
+        },
+        {
+          "title": "卷二",
+          "line": 150
+        },
+        {
+          "title": "卷三",
+          "line": 168
+        },
+        {
+          "title": "卷四",
+          "line": 186
+        },
+        {
+          "title": "卷五",
+          "line": 198
+        },
+        {
+          "title": "卷六",
+          "line": 210
+        },
+        {
+          "title": "卷七",
+          "line": 224
+        },
+        {
+          "title": "卷八",
+          "line": 236
+        },
+        {
+          "title": "卷九",
+          "line": 248
+        },
+        {
+          "title": "卷十",
+          "line": 266
+        },
+        {
+          "title": "卷十一",
+          "line": 278
+        },
+        {
+          "title": "卷十二",
+          "line": 296
+        },
+        {
+          "title": "卷十三",
+          "line": 308
+        },
+        {
+          "title": "卷十四",
+          "line": 322
+        },
+        {
+          "title": "卷十五",
+          "line": 334
+        },
+        {
+          "title": "卷十六",
+          "line": 346
+        },
+        {
+          "title": "卷十七",
+          "line": 358
+        },
+        {
+          "title": "卷十八",
+          "line": 376
+        },
+        {
+          "title": "卷十九",
+          "line": 398
+        },
+        {
+          "title": "卷二十",
+          "line": 410
+        }
+      ]
+    },
+    {
+      "id": "siku-003",
+      "file": "book-texts/batch-001/003-孔叢子（四庫全書本）.txt",
+      "sha256": "cd9572cfb00abc0cdba54541f3d6cb2903fe8f3f6feb3f6ce5a78b89acefde25",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 80
+        },
+        {
+          "title": "卷中",
+          "line": 330
+        },
+        {
+          "title": "卷下",
+          "line": 488
+        }
+      ]
+    },
+    {
+      "id": "siku-004",
+      "file": "book-texts/batch-001/004-新語（四庫全書本）.txt",
+      "sha256": "dc6745f023f01045ab5c88a07443fac9374d553c442b6bd398f6990d11a86566",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 24
+        },
+        {
+          "title": "卷下",
+          "line": 58
+        }
+      ]
+    },
+    {
+      "id": "siku-005",
+      "file": "book-texts/batch-001/005-新序（四庫全書本）.txt",
+      "sha256": "cdd55748d485420b35550677992e300bce8faf877c64baa2f77181a83bbccb4d",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 68
+        },
+        {
+          "title": "卷三",
+          "line": 104
+        },
+        {
+          "title": "卷四",
+          "line": 126
+        },
+        {
+          "title": "卷五",
+          "line": 186
+        },
+        {
+          "title": "卷六",
+          "line": 252
+        },
+        {
+          "title": "卷七",
+          "line": 284
+        },
+        {
+          "title": "卷八",
+          "line": 348
+        },
+        {
+          "title": "卷九",
+          "line": 388
+        },
+        {
+          "title": "卷十",
+          "line": 420
+        }
+      ]
+    },
+    {
+      "id": "siku-006",
+      "file": "book-texts/batch-001/006-揚子法言（四庫全書本）.txt",
+      "sha256": "b51f9b185482f71ebfef09cd6ab7fbfc69d7212b0fab74eddf2f6f013a0e6ead",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 40
+        },
+        {
+          "title": "卷二",
+          "line": 60
+        },
+        {
+          "title": "卷三",
+          "line": 80
+        },
+        {
+          "title": "卷四",
+          "line": 100
+        },
+        {
+          "title": "卷五",
+          "line": 116
+        },
+        {
+          "title": "卷六",
+          "line": 140
+        },
+        {
+          "title": "卷七",
+          "line": 162
+        },
+        {
+          "title": "卷八",
+          "line": 182
+        },
+        {
+          "title": "卷九",
+          "line": 200
+        },
+        {
+          "title": "卷十",
+          "line": 216
+        }
+      ]
+    },
+    {
+      "id": "siku-007",
+      "file": "book-texts/batch-001/007-潛夫論（四庫全書本）.txt",
+      "sha256": "4aa97a33baacf7adc12978b0399b33ed7d99521de802777d9306c035ca1c5f24",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 114
+        },
+        {
+          "title": "卷二",
+          "line": 144
+        },
+        {
+          "title": "卷三",
+          "line": 174
+        },
+        {
+          "title": "卷四",
+          "line": 202
+        },
+        {
+          "title": "卷五",
+          "line": 228
+        },
+        {
+          "title": "卷六",
+          "line": 262
+        },
+        {
+          "title": "卷七",
+          "line": 286
+        },
+        {
+          "title": "卷八",
+          "line": 304
+        },
+        {
+          "title": "卷九",
+          "line": 334
+        },
+        {
+          "title": "卷十",
+          "line": 366
+        }
+      ]
+    },
+    {
+      "id": "siku-008",
+      "file": "book-texts/batch-001/008-申鑒（四庫全書本）.txt",
+      "sha256": "0e1aaab4806ee467065e9f8efa2903cf5392e898718deb533690994860a97eb1",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 68
+        },
+        {
+          "title": "卷三",
+          "line": 114
+        },
+        {
+          "title": "卷四",
+          "line": 150
+        },
+        {
+          "title": "卷五",
+          "line": 182
+        }
+      ]
+    },
+    {
+      "id": "siku-009",
+      "file": "book-texts/batch-001/009-中論（四庫全書本）.txt",
+      "sha256": "6ec31748253ea9c782e56a4ddd10526a8ed13ba62ea2931827eb20f3d14d88de",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 30
+        },
+        {
+          "title": "卷下",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "id": "siku-010",
+      "file": "book-texts/batch-001/010-中説（四庫全書本）.txt",
+      "sha256": "f8640d898c4da067cae0a5cc47dc2e3981cfc013634d1cef1484963bc4862ad1",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 42
+        },
+        {
+          "title": "卷三",
+          "line": 56
+        },
+        {
+          "title": "卷四",
+          "line": 70
+        },
+        {
+          "title": "卷五",
+          "line": 84
+        },
+        {
+          "title": "卷六",
+          "line": 100
+        },
+        {
+          "title": "卷七",
+          "line": 114
+        },
+        {
+          "title": "卷八",
+          "line": 128
+        },
+        {
+          "title": "卷九",
+          "line": 142
+        },
+        {
+          "title": "卷十",
+          "line": 156
+        }
+      ]
+    },
+    {
+      "id": "siku-011",
+      "file": "book-texts/batch-001/011-帝範（四庫全書本）.txt",
+      "sha256": "bdbc681e51e02abc86d37bfda10b6db6c60b71223bd9d747f7ef5331340b5d61",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 30
+        },
+        {
+          "title": "卷二",
+          "line": 54
+        },
+        {
+          "title": "卷三",
+          "line": 78
+        },
+        {
+          "title": "卷四",
+          "line": 100
+        }
+      ]
+    },
+    {
+      "id": "siku-012",
+      "file": "book-texts/batch-001/012-續孟子（四庫全書本）.txt",
+      "sha256": "878810678699efc95db2065edf97a1556ec46628ee9b7a673f7e5106332e34aa",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 36
+        },
+        {
+          "title": "卷下",
+          "line": 74
+        }
+      ]
+    },
+    {
+      "id": "siku-013",
+      "file": "book-texts/batch-001/013-素履子（四庫全書本）.txt",
+      "sha256": "410e853319ba7ac1534a132231e5d97aded0de7270efc61371fc90e42f22c916",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 24
+        },
+        {
+          "title": "卷中",
+          "line": 46
+        },
+        {
+          "title": "卷下",
+          "line": 72
+        }
+      ]
+    },
+    {
+      "id": "siku-014",
+      "file": "book-texts/batch-001/014-家範（四庫全書本）.txt",
+      "sha256": "6ce1664f03f30a19be2d363ef3f49021d74b348bb3e07ece4dcfd622bbbd2f89",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 104
+        },
+        {
+          "title": "卷三",
+          "line": 128
+        },
+        {
+          "title": "卷四",
+          "line": 228
+        },
+        {
+          "title": "卷五",
+          "line": 316
+        },
+        {
+          "title": "卷六",
+          "line": 382
+        },
+        {
+          "title": "卷七",
+          "line": 448
+        },
+        {
+          "title": "卷八",
+          "line": 556
+        },
+        {
+          "title": "卷九",
+          "line": 598
+        },
+        {
+          "title": "卷十",
+          "line": 658
+        }
+      ]
+    },
+    {
+      "id": "siku-015",
+      "file": "book-texts/batch-001/015-帝學（四庫全書本）.txt",
+      "sha256": "591cf10645b3e6b4bada2fd0db054bcc9c1a5f64e0bccd629f21b893fb256cc7",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 100
+        },
+        {
+          "title": "卷二",
+          "line": 168
+        },
+        {
+          "title": "卷三",
+          "line": 220
+        },
+        {
+          "title": "卷四",
+          "line": 282
+        },
+        {
+          "title": "卷五",
+          "line": 318
+        },
+        {
+          "title": "卷六",
+          "line": 330
+        },
+        {
+          "title": "卷七",
+          "line": 352
+        },
+        {
+          "title": "卷八",
+          "line": 372
+        }
+      ]
+    },
+    {
+      "id": "siku-016",
+      "file": "book-texts/batch-001/016-張子全書（四庫全書本）.txt",
+      "sha256": "b96433bc522e13d65f2b83a30200207a73599e443a8d9b9e9755fda234be44ba",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 32
+        },
+        {
+          "title": "卷二",
+          "line": 180
+        },
+        {
+          "title": "卷三",
+          "line": 672
+        },
+        {
+          "title": "卷四",
+          "line": 1204
+        },
+        {
+          "title": "卷五",
+          "line": 1346
+        },
+        {
+          "title": "卷六",
+          "line": 1446
+        },
+        {
+          "title": "卷七",
+          "line": 1612
+        },
+        {
+          "title": "卷八",
+          "line": 1722
+        },
+        {
+          "title": "巻九",
+          "line": 1850
+        },
+        {
+          "title": "卷十",
+          "line": 2742
+        },
+        {
+          "title": "卷十一",
+          "line": 3646
+        },
+        {
+          "title": "卷十二",
+          "line": 4462
+        },
+        {
+          "title": "卷十三",
+          "line": 4606
+        },
+        {
+          "title": "卷十四",
+          "line": 4764
+        },
+        {
+          "title": "卷十五",
+          "line": 4914
+        }
+      ]
+    },
+    {
+      "id": "siku-017",
+      "file": "book-texts/batch-001/017-二程遺書（四庫全書本）.txt",
+      "sha256": "b565d760c660075820003b254a81ef29fda2427d89a72a43d6c4ad3335a39a4e",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 162
+        },
+        {
+          "title": "卷二上",
+          "line": 302
+        },
+        {
+          "title": "卷二下",
+          "line": 746
+        },
+        {
+          "title": "卷三",
+          "line": 848
+        },
+        {
+          "title": "卷四",
+          "line": 1082
+        },
+        {
+          "title": "卷五",
+          "line": 1172
+        },
+        {
+          "title": "卷六",
+          "line": 1264
+        },
+        {
+          "title": "卷七",
+          "line": 1648
+        },
+        {
+          "title": "卷八",
+          "line": 1776
+        },
+        {
+          "title": "卷九",
+          "line": 1870
+        },
+        {
+          "title": "卷十",
+          "line": 1952
+        },
+        {
+          "title": "卷十一",
+          "line": 2034
+        },
+        {
+          "title": "卷十二",
+          "line": 2394
+        },
+        {
+          "title": "卷十三",
+          "line": 2438
+        },
+        {
+          "title": "卷十四",
+          "line": 2468
+        },
+        {
+          "title": "卷十五",
+          "line": 2516
+        },
+        {
+          "title": "卷十六",
+          "line": 2916
+        },
+        {
+          "title": "卷十七",
+          "line": 2938
+        },
+        {
+          "title": "卷十八",
+          "line": 3078
+        },
+        {
+          "title": "卷十九",
+          "line": 3606
+        },
+        {
+          "title": "卷二十",
+          "line": 3796
+        },
+        {
+          "title": "卷二十一上",
+          "line": 3812
+        },
+        {
+          "title": "卷二十一下",
+          "line": 3864
+        },
+        {
+          "title": "卷二十二上",
+          "line": 3924
+        },
+        {
+          "title": "卷二十二下",
+          "line": 4106
+        },
+        {
+          "title": "卷二十三",
+          "line": 4192
+        },
+        {
+          "title": "卷二十四",
+          "line": 4248
+        },
+        {
+          "title": "卷二十五",
+          "line": 4338
+        },
+        {
+          "title": "附録",
+          "line": 4542
+        }
+      ]
+    },
+    {
+      "id": "siku-018",
+      "file": "book-texts/batch-001/018-二程粹言（四庫全書本）.txt",
+      "sha256": "5e7bc8f3ebaeb0ede304a4d98bb8d1a4038d3f4a848c997ea9bf345482cf4808",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 46
+        },
+        {
+          "title": "卷下",
+          "line": 946
+        }
+      ]
+    },
+    {
+      "id": "siku-019",
+      "file": "book-texts/batch-001/019-公是弟子記（四庫全書本）.txt",
+      "sha256": "0b6089299ab5e155e53b616ce5fb850380ebe7bc1c1e5eb423ee0d6dfca35547",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 146
+        },
+        {
+          "title": "卷三",
+          "line": 268
+        },
+        {
+          "title": "卷四",
+          "line": 402
+        }
+      ]
+    },
+    {
+      "id": "siku-020",
+      "file": "book-texts/batch-001/020-童䝉訓（四庫全書本）.txt",
+      "sha256": "4427ae0416c58c97bad5e426d205537f42d4b91ec4b4544d8a6d5f5e77f224de",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 24
+        },
+        {
+          "title": "卷中",
+          "line": 156
+        },
+        {
+          "title": "卷下",
+          "line": 214
+        }
+      ]
+    },
+    {
+      "id": "siku-021",
+      "file": "book-texts/batch-001/021-上蔡語錄（四庫全書本）.txt",
+      "sha256": "5601754555f3f02fe417bcf46a66d70624eea677f535cfb8da5a6427237a30c7",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "巻一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 138
+        },
+        {
+          "title": "卷三",
+          "line": 284
+        }
+      ]
+    },
+    {
+      "id": "siku-022",
+      "file": "book-texts/batch-001/022-袁氏世範（四庫全書本）.txt",
+      "sha256": "c1ce69d21df330b67aa3214e447773ec5bb2eecf98980e562daac69f860ef646",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 30
+        },
+        {
+          "title": "卷中",
+          "line": 142
+        },
+        {
+          "title": "卷下",
+          "line": 246
+        }
+      ]
+    },
+    {
+      "id": "siku-024",
+      "file": "book-texts/batch-001/024-近思錄（四庫全書本）.txt",
+      "sha256": "52fa6ffeeefd141c068c8c347250b5efb0a49dd887bed15942cd323e512fa4e6",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 128
+        },
+        {
+          "title": "卷三",
+          "line": 322
+        },
+        {
+          "title": "卷四",
+          "line": 470
+        },
+        {
+          "title": "卷五",
+          "line": 608
+        },
+        {
+          "title": "卷六",
+          "line": 682
+        },
+        {
+          "title": "卷七",
+          "line": 734
+        },
+        {
+          "title": "卷八",
+          "line": 822
+        },
+        {
+          "title": "卷九",
+          "line": 876
+        },
+        {
+          "title": "卷十",
+          "line": 932
+        },
+        {
+          "title": "卷十一",
+          "line": 1056
+        },
+        {
+          "title": "卷十二",
+          "line": 1102
+        },
+        {
+          "title": "卷十三",
+          "line": 1174
+        },
+        {
+          "title": "卷十四",
+          "line": 1214
+        }
+      ]
+    },
+    {
+      "id": "siku-026",
+      "file": "book-texts/batch-001/026-戒子通録（四庫全書本）.txt",
+      "sha256": "7a1daad813b267d2150bc236f40ca9c51ed8c2da49959e616754a289a4b15e64",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 44
+        },
+        {
+          "title": "卷二",
+          "line": 230
+        },
+        {
+          "title": "卷三",
+          "line": 250
+        },
+        {
+          "title": "卷四",
+          "line": 390
+        },
+        {
+          "title": "卷五",
+          "line": 448
+        },
+        {
+          "title": "卷六",
+          "line": 548
+        },
+        {
+          "title": "巻七",
+          "line": 638
+        },
+        {
+          "title": "卷八",
+          "line": 652
+        }
+      ]
+    },
+    {
+      "id": "siku-027",
+      "file": "book-texts/batch-001/027-知言（四庫全書本）.txt",
+      "sha256": "4ce46fe719844680145316d8c3ef2558751ed705c2ef926fdab874d0577eb71f",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 138
+        },
+        {
+          "title": "卷三",
+          "line": 230
+        },
+        {
+          "title": "卷四",
+          "line": 340
+        },
+        {
+          "title": "卷五",
+          "line": 428
+        },
+        {
+          "title": "卷六",
+          "line": 510
+        },
+        {
+          "title": "附錄",
+          "line": 546
+        }
+      ]
+    },
+    {
+      "id": "siku-028",
+      "file": "book-texts/batch-001/028-少儀外傳（四庫全書本）.txt",
+      "sha256": "5412a962838fe04040863919b49442343886bdbdceb98917198172f8c954d027",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 24
+        },
+        {
+          "title": "卷下",
+          "line": 264
+        }
+      ]
+    },
+    {
+      "id": "siku-029",
+      "file": "book-texts/batch-001/029-麗澤論説集錄（四庫全書本）.txt",
+      "sha256": "0d0284e23bb1aa6fad8abdec2cb38fae396044c50c76946d933a0ee65e9a6669",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 490
+        },
+        {
+          "title": "卷三",
+          "line": 760
+        },
+        {
+          "title": "卷四",
+          "line": 906
+        },
+        {
+          "title": "卷五",
+          "line": 930
+        },
+        {
+          "title": "卷六",
+          "line": 1026
+        },
+        {
+          "title": "卷七",
+          "line": 1172
+        },
+        {
+          "title": "卷八",
+          "line": 1346
+        },
+        {
+          "title": "卷九",
+          "line": 1438
+        },
+        {
+          "title": "卷十",
+          "line": 1646
+        }
+      ]
+    },
+    {
+      "id": "siku-030",
+      "file": "book-texts/batch-001/030-邇言（四庫全書本）.txt",
+      "sha256": "62590935f45299c9234aef8d94c95b9b23759f4f0f39a65675afc10e3030aaef",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 32
+        },
+        {
+          "title": "卷二",
+          "line": 66
+        },
+        {
+          "title": "卷三",
+          "line": 116
+        },
+        {
+          "title": "卷四",
+          "line": 164
+        },
+        {
+          "title": "卷五",
+          "line": 218
+        },
+        {
+          "title": "卷六",
+          "line": 260
+        },
+        {
+          "title": "卷七",
+          "line": 310
+        },
+        {
+          "title": "卷八",
+          "line": 362
+        },
+        {
+          "title": "卷九",
+          "line": 436
+        },
+        {
+          "title": "卷十",
+          "line": 562
+        },
+        {
+          "title": "卷十一",
+          "line": 652
+        },
+        {
+          "title": "卷十二",
+          "line": 704
+        }
+      ]
+    },
+    {
+      "id": "siku-031",
+      "file": "book-texts/batch-001/031-木鍾集（四庫全書本）.txt",
+      "sha256": "d701826e0b28767d6d714eaf146563b6b64eff298e6ba6c1b43c5fb26c672f54",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 984
+        },
+        {
+          "title": "卷三",
+          "line": 1462
+        },
+        {
+          "title": "卷四",
+          "line": 1508
+        },
+        {
+          "title": "卷五",
+          "line": 1868
+        },
+        {
+          "title": "卷六",
+          "line": 1980
+        },
+        {
+          "title": "卷七",
+          "line": 2014
+        },
+        {
+          "title": "卷八",
+          "line": 2174
+        },
+        {
+          "title": "卷九",
+          "line": 2530
+        },
+        {
+          "title": "卷十",
+          "line": 2606
+        },
+        {
+          "title": "卷十一",
+          "line": 3054
+        }
+      ]
+    },
+    {
+      "id": "siku-034",
+      "file": "book-texts/batch-001/034-項氏家説（四庫全書本）.txt",
+      "sha256": "1f31ec7a259ba805adeae75bdaedc3fe43b9ac18e5c1cdf1aa19630fc754ca03",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 72
+        },
+        {
+          "title": "卷二",
+          "line": 208
+        },
+        {
+          "title": "卷三",
+          "line": 286
+        },
+        {
+          "title": "卷四",
+          "line": 450
+        },
+        {
+          "title": "卷五",
+          "line": 606
+        },
+        {
+          "title": "卷六",
+          "line": 776
+        },
+        {
+          "title": "卷七",
+          "line": 894
+        },
+        {
+          "title": "卷八",
+          "line": 1014
+        },
+        {
+          "title": "卷九",
+          "line": 1130
+        },
+        {
+          "title": "卷十",
+          "line": 1208
+        },
+        {
+          "title": "附錄卷一",
+          "line": 1308
+        },
+        {
+          "title": "附錄卷二",
+          "line": 1412
+        }
+      ]
+    },
+    {
+      "id": "siku-036",
+      "file": "book-texts/batch-001/036-北溪字義（四庫全書本）.txt",
+      "sha256": "1479b571b657ec8b4656f3d6e1364a6e757e29b77ec586abfbd4521a060829de",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 24
+        },
+        {
+          "title": "卷下",
+          "line": 290
+        }
+      ]
+    },
+    {
+      "id": "siku-037",
+      "file": "book-texts/batch-001/037-讀書分年日程（四庫全書本）.txt",
+      "sha256": "1a8c03ad49c187dd5f56cc400bdad0a9a4b1e489c301b6e7d61135ef0b74c700",
+      "chapters": [
+        {
+          "title": "書前提要",
+          "line": 10
+        },
+        {
+          "title": "卷首",
+          "line": 28
+        },
+        {
+          "title": "卷一",
+          "line": 218
+        },
+        {
+          "title": "巻二",
+          "line": 344
+        },
+        {
+          "title": "卷三",
+          "line": 760
+        }
+      ]
+    },
+    {
+      "id": "siku-038",
+      "file": "book-texts/batch-001/038-辨惑編（四庫全書本）.txt",
+      "sha256": "524e9400888971c55b95bd512c686a4d684f36b153eb22ca29d385bdafc62d77",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 30
+        },
+        {
+          "title": "卷二",
+          "line": 228
+        },
+        {
+          "title": "卷三",
+          "line": 356
+        },
+        {
+          "title": "卷四",
+          "line": 452
+        },
+        {
+          "title": "附錄",
+          "line": 568
+        }
+      ]
+    },
+    {
+      "id": "siku-040",
+      "file": "book-texts/batch-001/040-居業録（四庫全書本）.txt",
+      "sha256": "be0532e17375b505aa3c09129aff96624904c9f6336455ff4f746e1df073f5d7",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 144
+        },
+        {
+          "title": "卷三",
+          "line": 494
+        },
+        {
+          "title": "巻四",
+          "line": 718
+        },
+        {
+          "title": "卷五",
+          "line": 912
+        },
+        {
+          "title": "卷六",
+          "line": 1082
+        },
+        {
+          "title": "卷七",
+          "line": 1132
+        },
+        {
+          "title": "巻八",
+          "line": 1232
+        }
+      ]
+    },
+    {
+      "id": "siku-042",
+      "file": "book-texts/batch-001/042-讀書劄記（四庫全書本）.txt",
+      "sha256": "90e034c3ffd86af3947edbb5e6727188a86e759a0b9d624825fe493ede174e94",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 64
+        },
+        {
+          "title": "卷三",
+          "line": 84
+        },
+        {
+          "title": "卷四",
+          "line": 202
+        },
+        {
+          "title": "卷五",
+          "line": 372
+        },
+        {
+          "title": "卷六",
+          "line": 432
+        },
+        {
+          "title": "巻七",
+          "line": 514
+        },
+        {
+          "title": "卷八",
+          "line": 590
+        }
+      ]
+    },
+    {
+      "id": "siku-043",
+      "file": "book-texts/batch-001/043-士翼（四庫全書本）.txt",
+      "sha256": "1b044b541f348bb731ec9d35b51a4d5ae2203656f336285306bc92b5c02c73d8",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 288
+        },
+        {
+          "title": "卷三",
+          "line": 598
+        }
+      ]
+    },
+    {
+      "id": "siku-044",
+      "file": "book-texts/batch-001/044-涇野子内篇（四庫全書本）.txt",
+      "sha256": "4b4e4109ca01b8ecad4b36db3764d0202e4b3563a2da519afdaa6ccb8682a854",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 154
+        },
+        {
+          "title": "卷三",
+          "line": 260
+        },
+        {
+          "title": "卷四",
+          "line": 302
+        },
+        {
+          "title": "卷五",
+          "line": 392
+        },
+        {
+          "title": "卷六",
+          "line": 448
+        },
+        {
+          "title": "卷七",
+          "line": 526
+        },
+        {
+          "title": "卷八",
+          "line": 704
+        },
+        {
+          "title": "卷九",
+          "line": 808
+        },
+        {
+          "title": "卷十",
+          "line": 940
+        },
+        {
+          "title": "巻十一",
+          "line": 1062
+        },
+        {
+          "title": "卷十二",
+          "line": 1146
+        },
+        {
+          "title": "卷十三",
+          "line": 1214
+        },
+        {
+          "title": "卷十四",
+          "line": 1312
+        },
+        {
+          "title": "卷十五",
+          "line": 1378
+        },
+        {
+          "title": "卷十六",
+          "line": 1458
+        },
+        {
+          "title": "卷十七",
+          "line": 1532
+        },
+        {
+          "title": "卷十八",
+          "line": 1572
+        },
+        {
+          "title": "卷十九",
+          "line": 1652
+        },
+        {
+          "title": "卷二十",
+          "line": 1752
+        },
+        {
+          "title": "卷二十一",
+          "line": 1838
+        },
+        {
+          "title": "卷二十二",
+          "line": 1898
+        },
+        {
+          "title": "卷二十三",
+          "line": 2000
+        },
+        {
+          "title": "卷二十四",
+          "line": 2120
+        },
+        {
+          "title": "卷二十五",
+          "line": 2214
+        },
+        {
+          "title": "卷二十六",
+          "line": 2298
+        },
+        {
+          "title": "卷二十七",
+          "line": 2356
+        }
+      ]
+    },
+    {
+      "id": "siku-045",
+      "file": "book-texts/batch-001/045-中庸衍義（四庫全書本）.txt",
+      "sha256": "f78b7419748affa0f543c6d6a17c74246d1a151f389cf92cc2d09db6d3a5b815",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 28
+        },
+        {
+          "title": "卷二",
+          "line": 138
+        },
+        {
+          "title": "卷三",
+          "line": 524
+        },
+        {
+          "title": "卷四",
+          "line": 914
+        },
+        {
+          "title": "卷五",
+          "line": 1212
+        },
+        {
+          "title": "卷六",
+          "line": 1550
+        },
+        {
+          "title": "卷七",
+          "line": 1872
+        },
+        {
+          "title": "卷八",
+          "line": 2108
+        },
+        {
+          "title": "卷九",
+          "line": 2430
+        },
+        {
+          "title": "卷十",
+          "line": 2758
+        },
+        {
+          "title": "卷十一",
+          "line": 3060
+        },
+        {
+          "title": "卷十二",
+          "line": 3344
+        },
+        {
+          "title": "卷十三",
+          "line": 3698
+        },
+        {
+          "title": "卷十四",
+          "line": 3920
+        },
+        {
+          "title": "卷十五",
+          "line": 4148
+        },
+        {
+          "title": "卷十六",
+          "line": 4514
+        },
+        {
+          "title": "卷十七",
+          "line": 4710
+        }
+      ]
+    },
+    {
+      "id": "siku-047",
+      "file": "book-texts/batch-001/047-世緯（四庫全書本）.txt",
+      "sha256": "a0ab6b55041ec4375aeb2093ec051c1bb3bcc20f3e0b752f70a7348455f7b151",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 28
+        },
+        {
+          "title": "卷下",
+          "line": 72
+        }
+      ]
+    },
+    {
+      "id": "siku-048",
+      "file": "book-texts/batch-001/048-呻吟語摘（四庫全書本）.txt",
+      "sha256": "61c8236a9e50e655577550fce76de81b09fadc08a92540290c6830608c38fce2",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 28
+        },
+        {
+          "title": "卷下",
+          "line": 598
+        }
+      ]
+    },
+    {
+      "id": "siku-049",
+      "file": "book-texts/batch-001/049-劉子遺書（四庫全書本）.txt",
+      "sha256": "5436303c92993fde0ef7e0c4d2a55517e8650e328f5201a0757cded89565b3d7",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "巻二",
+          "line": 138
+        },
+        {
+          "title": "卷三",
+          "line": 358
+        },
+        {
+          "title": "巻四",
+          "line": 598
+        }
+      ]
+    },
+    {
+      "id": "siku-050",
+      "file": "book-texts/batch-001/050-人譜（四庫全書本）.txt",
+      "sha256": "75d7e4101e58ad6116e69139cd354c2695172cf5356031fcbef84ddb5af02d30",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷上",
+          "line": 194
+        },
+        {
+          "title": "卷下",
+          "line": 780
+        }
+      ]
+    },
+    {
+      "id": "siku-051",
+      "file": "book-texts/batch-001/051-榕壇問業（四庫全書本）.txt",
+      "sha256": "7f3f89087fec9944c66cb37860faa15aeb0c1a0157032446d39ab852a2215dc5",
+      "chapters": [
+        {
+          "title": "卷首",
+          "line": 10
+        },
+        {
+          "title": "卷一",
+          "line": 24
+        },
+        {
+          "title": "卷二",
+          "line": 82
+        },
+        {
+          "title": "卷三",
+          "line": 128
+        },
+        {
+          "title": "卷四",
+          "line": 192
+        },
+        {
+          "title": "卷五",
+          "line": 248
+        },
+        {
+          "title": "卷六",
+          "line": 332
+        },
+        {
+          "title": "卷七",
+          "line": 400
+        },
+        {
+          "title": "卷八",
+          "line": 474
+        },
+        {
+          "title": "卷九",
+          "line": 522
+        },
+        {
+          "title": "卷十",
+          "line": 584
+        },
+        {
+          "title": "卷十一",
+          "line": 630
+        },
+        {
+          "title": "卷十二",
+          "line": 676
+        },
+        {
+          "title": "卷十三",
+          "line": 736
+        },
+        {
+          "title": "卷十四",
+          "line": 770
+        },
+        {
+          "title": "卷十五",
+          "line": 812
+        },
+        {
+          "title": "卷十六",
+          "line": 858
+        },
+        {
+          "title": "卷十七",
+          "line": 912
+        },
+        {
+          "title": "卷十八",
+          "line": 954
+        }
+      ]
+    }
+  ]
+}

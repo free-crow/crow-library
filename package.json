@@ -4,12 +4,13 @@
   "private": true,
   "description": "乌鸦的图书馆 Crow Library —— 免费、开放的数字图书馆（第一版：文字书闭环）",
   "scripts": {
-    "predev": "node scripts/split-chapters.mjs",
+    "predev": "node scripts/import-siku.mjs && node scripts/split-chapters.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/split-chapters.mjs",
+    "prebuild": "node scripts/import-siku.mjs && node scripts/split-chapters.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "books:import-siku": "node scripts/import-siku.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

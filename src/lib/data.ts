@@ -1,5 +1,6 @@
 import type { Book, Category } from "./types";
 import { NEW_BOOKS } from "./books.generated";
+import { SIKU_BOOKS } from "./books.siku.generated";
 
 /**
  * 示例数据：仅限已确认公版的内容（开源边界要求）。
@@ -314,6 +315,7 @@ export const BOOKS: Book[] = [
     fileUrl: "/books/art-of-war-sample.pdf",
   },
   ...NEW_BOOKS,
+  ...SIKU_BOOKS,
 ];
 
 /** 分类 id → 名称（支持多级） */

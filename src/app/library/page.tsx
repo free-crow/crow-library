@@ -19,7 +19,7 @@ function LibraryInner() {
   const result = useMemo(() => {
     let r = allBooks.filter(isPublic);
     const kw = q.trim().toLowerCase();
-    if (kw) r = r.filter((b) => b.title.toLowerCase().includes(kw) || b.author.toLowerCase().includes(kw));
+    if (kw) r = r.filter((b) => [b.title, b.author, ...b.tags].some((value) => value.toLowerCase().includes(kw)));
     if (cat) r = r.filter((b) => b.categoryId === cat || b.categoryId.startsWith(cat));
     return [...r].sort((a, b) => (sort === "heat" ? b.heat - a.heat : b.updatedAt.localeCompare(a.updatedAt)));
   }, [allBooks, q, cat, sort]);

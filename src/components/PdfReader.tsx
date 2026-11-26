@@ -19,15 +19,15 @@ const LOAD_TIMEOUT = 25000;
  * - 用 legacy 构建并补齐 Promise.withResolvers / structuredClone，兼容学校等场景的老浏览器；
  * - 加载超时、失败都有明确提示和“重试”，不会一直停在加载中。
  */
-export default function PdfReader({ fileUrl, title, onProgress }: {
-  fileUrl: string; title: string; onProgress: (percent: number, label: string) => void;
+export default function PdfReader({ fileUrl, title, onProgress, initialPage = 1 }: {
+  fileUrl: string; title: string; onProgress: (percent: number, label: string) => void; initialPage?: number;
 }) {
   const { reader } = useApp();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const docRef = useRef<PdfDoc | null>(null);
   const taskRef = useRef<{ destroy: () => Promise<void> } | null>(null);
   const renderTaskRef = useRef<{ cancel: () => void } | null>(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => Number.isFinite(initialPage) ? Math.max(1, Math.floor(initialPage)) : 1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -56,6 +56,7 @@ export default function PdfReader({ fileUrl, title, onProgress }: {
 
   useEffect(() => {
     let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     setLoading(true);
     setError("");
     setTotal(0);
@@ -66,17 +67,20 @@ export default function PdfReader({ fileUrl, title, onProgress }: {
     (async () => {
       try {
         const pdfjs = await loadPdfjs();
+        if (cancelled) return;
         const task = pdfjs.getDocument({ url: fileUrl });
         taskRef.current = task as unknown as { destroy: () => Promise<void> };
         const doc = await Promise.race([
           task.promise,
-          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), LOAD_TIMEOUT)),
+          new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error("timeout")), LOAD_TIMEOUT); }),
         ]);
         if (cancelled) { task.destroy().catch(() => {}); return; }
         docRef.current = doc as unknown as PdfDoc;
+        setPage((current) => Math.min(current, doc.numPages));
         setTotal(doc.numPages);
       } catch (e) {
         if (cancelled) return;
+        taskRef.current?.destroy().catch(() => {});
         const msg = e instanceof Error ? e.message : "";
         setError(
           msg === "timeout"
@@ -84,12 +88,14 @@ export default function PdfReader({ fileUrl, title, onProgress }: {
             : "PDF 加载失败，请刷新或重试"
         );
       } finally {
+        clearTimeout(timer);
         if (!cancelled) setLoading(false);
       }
     })();
 
     return () => {
       cancelled = true;
+      clearTimeout(timer);
       renderTaskRef.current?.cancel();
       renderTaskRef.current = null;
       taskRef.current?.destroy().catch(() => {});

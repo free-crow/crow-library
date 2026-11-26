@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useBookToc } from "@/components/useBookChapters";
 import Cover from "@/components/Cover";
 import Icon from "@/components/Icon";
 import { useApp, useAuth } from "@/components/StoreProvider";
@@ -19,20 +20,7 @@ export default function BookDetailPage() {
   const allBooks = useAllBooks();
   
   const book = allBooks.find((b) => b.id === id);
-  const [toc, setToc] = useState<string[] | null>(null);
-
-  /** 目录只取标题（几 KB），不再为了目录把整本 1~3MB 全文拉下来 */
-  useEffect(() => {
-    const bid = book?.id;
-    if (!bid || book?.format !== "TXT" || !book?.hasFullText) { setToc(null); return; }
-    let alive = true;
-    setToc(null);
-    fetch(`/books/toc/${bid}.json`, { cache: "force-cache" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (alive && Array.isArray(d?.titles) && d.titles.length) setToc(d.titles as string[]); })
-      .catch(() => { /* 没有目录文件时回落到预览章节 */ });
-    return () => { alive = false; };
-  }, [book?.id, book?.format, book?.hasFullText]);
+  const { titles, loading: tocLoading, error: tocError, retry: retryToc } = useBookToc(book);
 
   useEffect(() => {
     if (book?.id) router.prefetch(`/read/${book.id}`);
@@ -49,7 +37,7 @@ export default function BookDetailPage() {
   const fav = favorites.includes(book.id);
   const inShelf = shelf.includes(book.id);
   const prog = progress[book.id];
-  const chapterTitles = toc ?? (book.chapters ?? []).map((ch) => ch.title);
+  const chapterTitles = titles ?? [];
 
   const toggle = (list: string[], set: (v: string[]) => void) =>
     user ? set(list.includes(book.id) ? list.filter((x) => x !== book.id) : [...list, book.id]) : openAuth();
@@ -85,14 +73,21 @@ export default function BookDetailPage() {
           <dt className="text-neutral-500">{t("book.scope")}</dt><dd>{c.permissionScope}</dd>
           {c.territory && <><dt className="text-neutral-500">{t("book.territory")}</dt><dd>{c.territory}</dd></>}
           {c.validUntil && <><dt className="text-neutral-500">{t("book.valid")}</dt><dd>{c.validUntil}</dd></>}
-          <dt className="text-neutral-500">{t("book.attribution")}</dt><dd>{c.attributionText}</dd>
-          <dt className="text-neutral-500">{t("book.source")}</dt><dd>{c.sourceUrl}{c.sourceDate ? ` · ${t("book.sourceAt", { date: c.sourceDate })}` : ""}</dd>
+          <dt className="text-neutral-500">{t("book.attribution")}</dt><dd className="min-w-0 break-words [overflow-wrap:anywhere]">{c.attributionText}</dd>
+          <dt className="text-neutral-500">{t("book.source")}</dt><dd className="min-w-0 break-words [overflow-wrap:anywhere]">{c.sourceUrl}{c.sourceDate ? ` · ${t("book.sourceAt", { date: c.sourceDate })}` : ""}</dd>
           <dt className="text-neutral-500">{t("book.review")}</dt><dd>{c.reviewedBy} · {c.reviewedAt}</dd>
         </dl>
       </section>
 
       <section>
-        {chapterTitles.length ? (
+        {tocLoading ? (
+          <p role="status" className="text-sm text-neutral-500">{t("common.loading")}</p>
+        ) : tocError ? (
+          <div role="alert" className="text-sm text-neutral-500">
+            {t("read.fileMissing")}
+            <button className="ml-3 rounded-lg border px-3 py-1.5" onClick={retryToc}>重试</button>
+          </div>
+        ) : chapterTitles.length ? (
           <>
             <h2 className="mb-3 text-lg font-semibold">{t("book.toc", { n: chapterTitles.length })}</h2>
             <div className="max-h-96 divide-y divide-neutral-200 overflow-y-auto rounded-xl border border-neutral-200 dark:divide-neutral-700 dark:border-neutral-700">

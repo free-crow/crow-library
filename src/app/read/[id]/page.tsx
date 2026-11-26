@@ -135,6 +135,7 @@ function ReaderInner() {
             onProgress={(pct, label) => { setFileLabel(label); if (pct > 0) saveFileProgress(book, pct, label); }} />
         ) : (
           <PdfReader fileUrl={book.fileUrl} title={book.title}
+            initialPage={Number(progress[book.id]?.chapterTitle.match(/^第 (\d+) 页$/)?.[1] ?? 1)}
             onProgress={(pct, label) => { setFileLabel(label); if (pct > 0) saveFileProgress(book, pct, label); }} />
         )}
         {aiPanel}
@@ -145,7 +146,7 @@ function ReaderInner() {
   /* ===== TXT ===== */
   if (chaptersError) {
     return (
-      <div className="py-16 text-center text-sm text-neutral-500">
+      <div role="alert" className="py-16 text-center text-sm text-neutral-500">
         {t("read.fileMissing")}
         <button className="ml-3 rounded-lg border border-neutral-300 px-3 py-1.5 text-neutral-700 dark:border-neutral-600 dark:text-neutral-200"
           onClick={retryChapters}>重试</button>
@@ -158,7 +159,8 @@ function ReaderInner() {
   return (
     <div className="mx-auto max-w-3xl">
       {toolbar}
-      <select className="mb-4 rounded-lg border border-neutral-300 bg-transparent px-2 py-1.5 text-sm dark:border-neutral-600"
+      <select aria-label={t("book.toc", { n: titles.length })}
+        className="mb-4 max-w-full rounded-lg border border-neutral-300 bg-transparent px-2 py-1.5 text-sm dark:border-neutral-600"
         value={idx} onChange={(e) => setChIdx(Number(e.target.value))}>
         {titles.map((title, i) => <option key={i} value={i}>{title}</option>)}
       </select>
@@ -183,12 +185,17 @@ function ReaderInner() {
   );
 }
 
+function ReaderRoute() {
+  const { id } = useParams<{ id: string }>();
+  const search = useSearchParams();
+  return <ReaderInner key={id + ":" + (search.get("ch") ?? "")} />;
+}
+
 export default function ReaderPage() {
   const { t } = useI18n();
-  const { id } = useParams<{ id: string }>();
   return (
     <Suspense fallback={<div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>}>
-      <ReaderInner key={id} />
+      <ReaderRoute />
     </Suspense>
   );
 }
