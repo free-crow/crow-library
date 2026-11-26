@@ -31,15 +31,7 @@ export default function BookDetailPage() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => { if (alive && Array.isArray(d?.titles) && d.titles.length) setToc(d.titles as string[]); })
       .catch(() => { /* 没有目录文件时回落到预览章节 */ });
-    /* 空闲 1.2 秒后预热全文，点“开始阅读”时直接命中浏览器缓存 */
-    const warm = window.setTimeout(() => {
-      const link = document.createElement("link");
-      link.rel = "prefetch";
-      link.as = "fetch";
-      link.href = `/books/text/${bid}.json`;
-      document.head.appendChild(link);
-    }, 1200);
-    return () => { alive = false; clearTimeout(warm); };
+    return () => { alive = false; };
   }, [book?.id, book?.format, book?.hasFullText]);
 
   useEffect(() => {

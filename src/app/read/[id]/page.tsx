@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Icon from "@/components/Icon";
 import { useApp, useAuth } from "@/components/StoreProvider";
@@ -26,7 +26,6 @@ function ReaderInner() {
   const { t } = useI18n();
   const allBooks = useAllBooks();
   const book = allBooks.find((b) => b.id === id);
-  const { chapters, firstChapter, loading: chaptersLoading, error: chaptersError, retry: retryChapters } = useBookChapters(book);
   const { user, progress, setProgress, history, setHistory, shelf, setShelf, reader, setReader, aiUsage, setAiUsage, ready } = useApp();
   const { openAuth } = useAuth();
   const [chIdx, setChIdx] = useState<number | null>(null);
@@ -36,34 +35,17 @@ function ReaderInner() {
 
   const isTxt = book?.format === "TXT";
 
-  /* 进度只用于首次定位：写入进度会反过来触发 effect，不能直接作为定位 effect 的依赖 */
-  const progressRef = useRef(progress);
-  progressRef.current = progress;
-
-  /* 切换书籍时重置章节状态（同一路由下参数变化时组件可能被复用） */
-  useEffect(() => {
-    setChIdx(null);
-  }, [book?.id]);
+  const requested = chIdx ?? Number(search.get("ch") ?? progress[id]?.chapterIndex ?? 0);
+  const { titles, index: idx, chapter: chap, error: chaptersError, retry: retryChapters } = useBookChapters(book, requested, ready);
 
   useEffect(() => {
-    if (!ready || !book || !isTxt || chaptersLoading || !chapters.length || chIdx !== null) return;
-    const fromUrl = search.get("ch");
-    const saved = progressRef.current[book.id]?.chapterIndex ?? 0;
-    const init = Number(fromUrl !== null ? fromUrl : saved);
-    setChIdx(Number.isFinite(init) ? Math.min(Math.max(Math.floor(init), 0), chapters.length - 1) : 0);
-  }, [ready, book, search, isTxt, chapters.length, chaptersLoading, chIdx]);
-
-  /* 阅读记忆：TXT 按章节保存 */
-  useEffect(() => {
-    if (!book || !isTxt || chIdx === null || !chapters.length) return;
-    const chap = chapters[Math.min(chIdx, chapters.length - 1)];
-    if (!chap) return;
-    const percent = Math.round(((chIdx + 1) / chapters.length) * 100);
-    setProgress({ ...progress, [book.id]: { bookId: book.id, chapterIndex: chIdx, chapterTitle: chap.title, percent, updatedAt: Date.now() } });
-    setHistory([{ bookId: book.id, chapterIndex: chIdx, percent, time: Date.now() }, ...history.filter((h) => h.bookId !== book.id)].slice(0, 50));
+    if (!ready || !book || !isTxt || !chap || !titles?.length) return;
+    const percent = Math.round(((idx + 1) / titles.length) * 100);
+    setProgress({ ...progress, [book.id]: { bookId: book.id, chapterIndex: idx, chapterTitle: chap.title, percent, updatedAt: Date.now() } });
+    setHistory([{ bookId: book.id, chapterIndex: idx, percent, time: Date.now() }, ...history.filter((h) => h.bookId !== book.id)].slice(0, 50));
     if (!shelf.includes(book.id)) setShelf([...shelf, book.id]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chIdx]);
+  }, [ready, id, idx, chap?.title, titles?.length]);
 
   function saveFileProgress(b: Book, pct: number, label: string) {
     setProgress({ ...progress, [b.id]: { bookId: b.id, chapterIndex: 0, chapterTitle: label, percent: pct, updatedAt: Date.now() } });
@@ -84,7 +66,7 @@ function ReaderInner() {
       const resp = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, bookId: book.id, chapterIndex: isTxt ? chIdx : undefined, text }),
+        body: JSON.stringify({ action, bookId: book.id, chapterIndex: isTxt ? idx : undefined, text }),
       });
       const data = await resp.json();
       /* 版权边界：回答以摘要/解释/短引用为主，不提供整章逐字输出 */
@@ -135,7 +117,7 @@ function ReaderInner() {
           style={{ left: pop.x, top: pop.y }}>
           {AI_ACTIONS.map((k, i) => (
             <button key={k} className="whitespace-nowrap rounded-lg px-2.5 py-1.5 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-700"
-              onClick={() => runAI(ACTION_PROMPTS[i], pop.text, fileLabel || (isTxt && chIdx !== null ? chapters[chIdx]?.title ?? "" : ""))}>{t(k)}</button>
+              onClick={() => runAI(ACTION_PROMPTS[i], pop.text, fileLabel || (chap?.title ?? ""))}>{t(k)}</button>
           ))}
         </div>
       )}
@@ -161,28 +143,7 @@ function ReaderInner() {
   }
 
   /* ===== TXT ===== */
-  if (chaptersLoading) {
-    /* 只在本来就会从第一章打开时先画出已到达的第一章，导航仍等全文，避免进度被夹到第 1 章。 */
-    const fromUrl = search.get("ch");
-    const saved = progressRef.current[book.id]?.chapterIndex ?? 0;
-    const intended = Number(fromUrl !== null ? fromUrl : saved);
-    const openAtStart = !Number.isFinite(intended) || intended <= 0;
-    if (openAtStart && firstChapter) {
-      return (
-        <div className="mx-auto max-w-3xl">
-          {toolbar}
-          <div
-            className="reader-content min-h-[55vh] rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700 md:p-9"
-            style={{ fontSize: reader.size, fontFamily: reader.font === "serif" ? "Georgia,'Songti SC',serif" : "system-ui,sans-serif" }}>
-            <h3 className="mb-5 text-lg font-semibold">{firstChapter.title}</h3>
-            {firstChapter.paras.map((p, i) => <p key={i} className="mb-4 indent-[2em]">{p}</p>)}
-          </div>
-        </div>
-      );
-    }
-    return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
-  }
-  if (chaptersError || !chapters.length) {
+  if (chaptersError) {
     return (
       <div className="py-16 text-center text-sm text-neutral-500">
         {t("read.fileMissing")}
@@ -191,18 +152,15 @@ function ReaderInner() {
       </div>
     );
   }
-  if (chIdx === null) return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
-  /* 章节数变化时防止索引越界（切换书籍/数据回退） */
-  const idx = Math.min(Math.max(chIdx, 0), chapters.length - 1);
-  const chap = chapters[idx];
-  const percent = Math.round(((idx + 1) / chapters.length) * 100);
+  if (!chap || !titles?.length) return <div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>;
+  const percent = Math.round(((idx + 1) / titles.length) * 100);
 
   return (
     <div className="mx-auto max-w-3xl">
       {toolbar}
       <select className="mb-4 rounded-lg border border-neutral-300 bg-transparent px-2 py-1.5 text-sm dark:border-neutral-600"
         value={idx} onChange={(e) => setChIdx(Number(e.target.value))}>
-        {chapters.map((c, i) => <option key={i} value={i}>{c.title}</option>)}
+        {titles.map((title, i) => <option key={i} value={i}>{title}</option>)}
       </select>
       <div onMouseUp={() => onSelect(chap.title)}
         className="reader-content min-h-[55vh] rounded-2xl border border-neutral-200 p-6 dark:border-neutral-700 md:p-9"
@@ -216,9 +174,9 @@ function ReaderInner() {
       <div className="mt-3 flex items-center gap-3">
         <button className="flex items-center gap-1 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-neutral-600"
           disabled={idx === 0} onClick={() => setChIdx(idx - 1)}><Icon name="chevron-left" size={15} /> {t("read.prev")}</button>
-        <span className="text-sm text-neutral-500">{idx + 1} / {chapters.length} · {percent}%</span>
+        <span className="text-sm text-neutral-500">{idx + 1} / {titles.length} · {percent}%</span>
         <button className="flex items-center gap-1 rounded-lg border border-neutral-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-neutral-600"
-          disabled={idx === chapters.length - 1} onClick={() => setChIdx(idx + 1)}>{t("read.next")} <Icon name="chevron-right" size={15} /></button>
+          disabled={idx === titles.length - 1} onClick={() => setChIdx(idx + 1)}>{t("read.next")} <Icon name="chevron-right" size={15} /></button>
       </div>
       {aiPanel}
     </div>
@@ -227,9 +185,10 @@ function ReaderInner() {
 
 export default function ReaderPage() {
   const { t } = useI18n();
+  const { id } = useParams<{ id: string }>();
   return (
     <Suspense fallback={<div className="py-16 text-center text-neutral-500">{t("common.loading")}</div>}>
-      <ReaderInner />
+      <ReaderInner key={id} />
     </Suspense>
   );
 }
